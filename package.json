@@ -1,36 +1,37 @@
 {
-	"name": "itihaas-api",
-	"version": "1.0.0",
-	"description": "",
-	"main": "index.js",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/sunillshastry/itihaas-api.git"
-	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
-	"bugs": {
-		"url": "https://github.com/sunillshastry/itihaas-api/issues"
-	},
-	"homepage": "https://github.com/sunillshastry/itihaas-api#readme",
-	"dependencies": {
-		"body-parser": "^2.2.0",
-		"cors": "^2.8.5",
-		"dotenv": "^16.4.7",
-		"express": "^4.21.2",
-		"mongoose": "^8.13.0",
-		"morgan": "^1.10.0"
-	},
-	"devDependencies": {
-		"eslint": "^8.57.1",
-		"eslint-config-airbnb-base": "^15.0.0",
-		"eslint-config-prettier": "^10.1.1",
-		"eslint-plugin-import": "^2.31.0",
-		"eslint-plugin-prettier": "^5.2.5",
-		"prettier": "^3.5.3"
-	}
+  "name": "itihaas-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sunillshastry/itihaas-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sunillshastry/itihaas-api/issues"
+  },
+  "homepage": "https://github.com/sunillshastry/itihaas-api#readme",
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.13.0",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-prettier": "^5.2.5",
+    "prettier": "^3.5.3"
+  }
 }
