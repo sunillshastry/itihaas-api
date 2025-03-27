@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/sunillshastry/itihaas-api/issues"
   },
-  "homepage": "https://github.com/sunillshastry/itihaas-api#readme"
+  "homepage": "https://github.com/sunillshastry/itihaas-api#readme",
+  "dependencies": {
+    "body-parser": "^2.2.0"
+  }
 }
