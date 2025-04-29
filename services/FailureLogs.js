@@ -4,7 +4,15 @@ class FailureLogs {
    * @returns A string consisting of the failure message
    */
   static databaseAccessFailure() {
-    return 'Fail: Unable to access specified information from database due to server error';
+    return 'Fail: Unable to access specified information from database due to an internal server error';
+  }
+
+  /**
+   * Failure log when the user requests for an entity that is absent in the database
+   * @returns A string consisting of the failure message
+   */
+  static entityNotFound() {
+    return 'Fail: Unable to find the entity under the specified identifier parameter';
   }
 }
 
