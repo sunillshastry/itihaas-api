@@ -4,7 +4,7 @@ class FailureLogs {
    * @returns A string consisting of the failure message
    */
   static databaseAccessFailure() {
-    return 'Fail: Unable to access specified information from database due to server error';
+    return 'Fail: Unable to access specified information from database due to an internal server error';
   }
 }
 
