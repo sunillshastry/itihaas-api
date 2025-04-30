@@ -14,7 +14,7 @@ const {
 router.get('/', getAllDynasties);
 router.get('/id/:id', getDynastiesById);
 router.get('/:slug', getDynastyBySlugName);
-router.get('/titles', getDynastyTitles);
+router.get('/search/titles', getDynastyTitles);
 
 // Router export
 module.exports = router;
