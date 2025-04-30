@@ -117,6 +117,24 @@ async function getDynastiesById(request, response) {
 
     // Check if dynasty exists - send 404 response if it doesn't
     if (!dynasty) {
+      const appException = new AppException(
+        'Failed to locate specified resource in database',
+        404,
+        'error',
+        false,
+        `${request.host}:${request.originalUrl}`,
+        request.method,
+        'controllers.dynasties.getDynastyById',
+      );
+
+      if (process.env.NODE_ENV === 'development') {
+        return response.status(404).json({
+          success: false,
+          message: FailureLogs.entityNotFound(),
+          log: appException.log(),
+        });
+      }
+
       return response.status(404).json({
         success: false,
         message: FailureLogs.entityNotFound(),
@@ -131,10 +149,28 @@ async function getDynastiesById(request, response) {
       },
     });
   } catch (e) {
+    const appException = new AppException(
+      'Failed to fetch specified resource in database',
+      500,
+      'fail',
+      false,
+      `${request.host}:${request.originalUrl}`,
+      request.method,
+      'controllers.dynasties.getDynastyById',
+    );
+
+    if (process.env.NODE_ENV === 'development') {
+      return response.status(500).json({
+        success: false,
+        message: FailureLogs.entityNotFound(),
+        errorLog: e,
+        log: appException.log(),
+      });
+    }
+
     return response.status(500).json({
       success: false,
       message: FailureLogs.databaseAccessFailure(),
-      errorLog: e,
     });
   }
 }
