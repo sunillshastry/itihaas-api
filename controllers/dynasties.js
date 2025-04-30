@@ -4,6 +4,7 @@ const Dynasties = require('../models/Dynasties');
 // Services
 const FailureLogs = require('../services/FailureLogs');
 const checkValidQueryField = require('../utils/checkValidQueryField');
+const convertStringToBoolean = require('../utils/convertStringToBoolean');
 
 /**
  * Controller function to get all Dynasties for dynasties routes
@@ -15,7 +16,7 @@ const checkValidQueryField = require('../utils/checkValidQueryField');
 async function getAllDynasties(request, response) {
   try {
     // Retrieve from request queries
-    const { fields } = request.query;
+    const { fields, wars, rulers } = request.query;
 
     // Format all 'fields' values into an array
     const userRequestedFields =
@@ -43,6 +44,16 @@ async function getAllDynasties(request, response) {
         REQUIRED_DB_FIELDS += ` ${field === 'description' ? 'description.long' : field}`;
       }
     });
+
+    // Explicitly check for 'wars' in request.query
+    if (wars && convertStringToBoolean(wars)) {
+      REQUIRED_DB_FIELDS += ' wars';
+    }
+
+    // Explicitly check for 'rulers' in request.query
+    if (rulers && convertStringToBoolean(rulers)) {
+      REQUIRED_DB_FIELDS += ' rulers';
+    }
 
     // Retrieve specific fields from database
     const dynasties = await Dynasties.find({}).select(REQUIRED_DB_FIELDS);
