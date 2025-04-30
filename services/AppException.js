@@ -2,15 +2,7 @@
  * Custom App Error for logging during development
  */
 class AppException extends Error {
-  constructor(
-    message,
-    status = 500,
-    type = 'fail',
-    success = false,
-    route = '/',
-    method = '',
-    name = '',
-  ) {
+  constructor(message, status, type, success, route, method, name) {
     super(message);
     this.status = status;
     this.type = type;
