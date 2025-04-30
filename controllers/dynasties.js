@@ -277,7 +277,26 @@ async function getDynastyTitles(request, response) {
       const prohibitedFields = userRequestedFields.filter(
         (field) => !VALID_FIELD_ENTRIES.includes(field),
       );
+
       if (prohibitedFields.length > 0) {
+        const appException = new AppException(
+          'Failed to locate specified resource in database',
+          404,
+          'error',
+          false,
+          `${request.host}:${request.originalUrl}`,
+          request.method,
+          'controllers.dynasties.getDynastyTitles',
+        );
+
+        if (process.env.NODE_ENV === 'development') {
+          return response.status(404).json({
+            success: false,
+            message: FailureLogs.entityNotFound(),
+            log: appException.log(),
+          });
+        }
+
         return response.status(404).json({
           success: false,
           message: FailureLogs.entityNotFound(),
@@ -315,10 +334,28 @@ async function getDynastyTitles(request, response) {
       },
     });
   } catch (e) {
+    const appException = new AppException(
+      'Failed to fetch specified resource from the database',
+      500,
+      'fail',
+      false,
+      `${request.host}:${request.originalUrl}`,
+      request.method,
+      'controllers.dynasties.getDynastyBySlugName',
+    );
+
+    if (process.env.NODE_ENV === 'development') {
+      return response.status(500).json({
+        success: false,
+        message: FailureLogs.databaseAccessFailure(),
+        errorLog: e,
+        log: appException.log(),
+      });
+    }
+
     return response.status(500).json({
       success: false,
       message: FailureLogs.databaseAccessFailure(),
-      errorLog: e,
     });
   }
 }
