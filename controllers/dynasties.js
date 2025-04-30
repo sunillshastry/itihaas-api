@@ -1,8 +1,14 @@
+// Global imports
+const dotenv = require('dotenv');
+
+dotenv.config();
+
 // Models
 const Dynasties = require('../models/Dynasties');
 
 // Services
 const FailureLogs = require('../services/FailureLogs');
+const AppException = require('../services/AppException');
 const checkValidQueryField = require('../utils/checkValidQueryField');
 const convertStringToBoolean = require('../utils/convertStringToBoolean');
 
@@ -70,10 +76,28 @@ async function getAllDynasties(request, response) {
     });
   } catch (e) {
     // Provide with server error
+    const appException = new AppException(
+      'Failed to fetch all dynasties from database',
+      500,
+      'fail',
+      false,
+      `${request.host}:${request.originalUrl}`,
+      request.method,
+      'controllers.dynasties.getAllDynasties',
+    );
+
+    if (process.env.NODE_ENV === 'development') {
+      return response.status(500).json({
+        success: false,
+        message: FailureLogs.databaseAccessFailure(),
+        errorLog: e,
+        log: appException.log(),
+      });
+    }
+
     return response.status(500).json({
       success: false,
       message: FailureLogs.databaseAccessFailure(),
-      errorLog: e,
     });
   }
 }
