@@ -9,6 +9,7 @@ dotenv.config();
 
 // Local imports
 const dynastiesRouter = require('./routes/dynasties');
+const rulersRouter = require('./routes/rulers');
 const createDatabaseConnection = require('./database/config');
 
 const app = express();
@@ -25,6 +26,7 @@ app.use(cors());
 
 // Routing
 app.use('/api/v1/dynasties', dynastiesRouter);
+app.use('/api/v1/rulers', rulersRouter);
 
 if (HOST && PORT) {
   app.listen(PORT, HOST, function () {
