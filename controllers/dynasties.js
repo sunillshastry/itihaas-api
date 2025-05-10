@@ -266,7 +266,7 @@ async function getDynastyTitles(request, response) {
     [];
 
   // List of valid query entry fields
-  const VALID_FIELD_ENTRIES = ['id', 'slug'];
+  const VALID_FIELD_ENTRIES = ['id', 'slug', 'type'];
 
   const databaseProjection = { name: 1, _id: 0 };
   let isReturnTypeObject = false;
@@ -320,7 +320,10 @@ async function getDynastyTitles(request, response) {
     const dynasties = await Dynasties.find({}, databaseProjection).lean();
     let result;
     if (isReturnTypeObject) {
-      result = dynasties;
+      result = dynasties.map((dynasty) => ({
+        ...dynasty,
+        type: 'dynasty',
+      }));
     } else {
       result = dynasties.map((dynasty) => dynasty.name);
     }
