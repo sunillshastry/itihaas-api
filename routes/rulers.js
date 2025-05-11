@@ -3,6 +3,7 @@ const {
   getAllRulers,
   getRulerById,
   getRulerBySlugName,
+  getRulerTitles,
 } = require('../controllers/rulers');
 
 const router = express.Router();
@@ -12,5 +13,6 @@ const router = express.Router();
 router.get('/', getAllRulers);
 router.get('/id/:id', getRulerById);
 router.get('/:slug', getRulerBySlugName);
+router.get('/search/titles', getRulerTitles);
 
 module.exports = router;
