@@ -1,5 +1,9 @@
 const express = require('express');
-const { getAllRulers, getRulerById } = require('../controllers/rulers');
+const {
+  getAllRulers,
+  getRulerById,
+  getRulerBySlugName,
+} = require('../controllers/rulers');
 
 const router = express.Router();
 
@@ -7,5 +11,6 @@ const router = express.Router();
 // GET routes
 router.get('/', getAllRulers);
 router.get('/id/:id', getRulerById);
+router.get('/:slug', getRulerBySlugName);
 
 module.exports = router;
