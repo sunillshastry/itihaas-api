@@ -320,10 +320,16 @@ async function getDynastyTitles(request, response) {
     const dynasties = await Dynasties.find({}, databaseProjection).lean();
     let result;
     if (isReturnTypeObject) {
-      result = dynasties.map((dynasty) => ({
-        ...dynasty,
-        type: 'dynasty',
-      }));
+      if (userRequestedFields.includes('type')) {
+        result = dynasties.map((dynasty) => ({
+          ...dynasty,
+          type: 'dynasty',
+        }));
+      } else {
+        result = dynasties.map((dynasty) => ({
+          ...dynasty,
+        }));
+      }
     } else {
       result = dynasties.map((dynasty) => dynasty.name);
     }
