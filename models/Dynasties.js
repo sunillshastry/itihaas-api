@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 // Primary Schema for Dynasty
-const DynastiesSchema = mongoose.Schema(
+const DynastiesSchema = new mongoose.Schema(
   {
     slug: {
       type: String,
