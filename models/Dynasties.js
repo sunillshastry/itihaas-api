@@ -116,8 +116,19 @@ const DynastiesSchema = new mongoose.Schema(
       default: [],
     },
     furtherReading: {
-      type: Map,
-      of: String,
+      type: [
+        {
+          publisher: {
+            type: String,
+            default: null,
+          },
+          link: {
+            type: String,
+            default: null,
+          },
+        },
+      ],
+      default: [],
     },
     articles: {
       type: [
