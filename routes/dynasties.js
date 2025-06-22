@@ -8,6 +8,7 @@ const {
   getDynastyBySlugName,
   getDynastyTitles,
   getRandomDynasty,
+  getDynastiesBySearch,
 } = require('../controllers/dynasties');
 
 // Routes
@@ -17,6 +18,7 @@ router.get('/search/titles', getDynastyTitles);
 router.get('/random', getRandomDynasty);
 
 // GET routes (with params)
+router.get('/s/:search', getDynastiesBySearch);
 router.get('/id/:id', getDynastiesById);
 router.get('/:slug', getDynastyBySlugName);
 
