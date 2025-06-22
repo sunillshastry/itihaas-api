@@ -447,10 +447,67 @@ async function getRandomDynasty(request, response) {
   }
 }
 
+/**
+ * Controller function to get dynasties by search
+ *
+ * @param {Object} request Default Express request object
+ * @param {Object} response Default Express response object
+ * @returns A response code with status code 200, 404 or 500 signifying success or failure respectively
+ */
+async function getDynastiesBySearch(request, response) {
+  const { search } = request.params;
+  try {
+    // Use MongoDB find query to get all matches with 'name' or 'otherNames' properties
+    const dynasties = await Dynasties.find({
+      $or: [
+        { name: { $regex: search, $options: 'i' } },
+        { otherNames: { $elemMatch: { $regex: search, $options: 'i' } } },
+      ],
+    });
+
+    // Return success response
+    return response.status(200).json({
+      success: true,
+      size: dynasties.length,
+      data: {
+        dynasties,
+      },
+    });
+  } catch (e) {
+    // Build app exception on server error
+    const appException = new AppException(
+      'Failed to fetch specified resource from the database',
+      500,
+      'fail',
+      false,
+      `${request.host}:${request.originalUrl}`,
+      request.method,
+      'controllers.dynasties.getDynastiesBySearch',
+    );
+
+    // Development mode response
+    if (process.env.NODE_ENV === 'development') {
+      return response.status(500).json({
+        success: false,
+        message: FailureLogs.databaseAccessFailure(),
+        errorLog: e,
+        log: appException.log(),
+      });
+    }
+
+    // Default response
+    return response.status(500).json({
+      success: false,
+      message: FailureLogs.databaseAccessFailure(),
+    });
+  }
+}
+
 module.exports = {
   getAllDynasties,
   getDynastiesById,
   getDynastyBySlugName,
   getDynastyTitles,
   getRandomDynasty,
+  getDynastiesBySearch,
 };
