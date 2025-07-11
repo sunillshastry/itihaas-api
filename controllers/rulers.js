@@ -7,6 +7,7 @@ dotenv.config();
 const Rulers = require('../models/Rulers');
 const AppException = require('../services/AppException');
 const FailureLogs = require('../services/FailureLogs');
+const checkValidQueryField = require('../utils/checkValidQueryField');
 
 /**
  * Get a list of all rulers
@@ -423,6 +424,37 @@ async function getRandomRuler(request, response) {
  */
 async function getRulersBySearch(request, response) {
   const { search } = request.params;
+
+  // Retrieve from request queries
+  const { fields } = request.query;
+
+  // Format all 'fields' values into an array
+  const userRequestedFields =
+    (fields && fields.split(',').map((field) => field.trim().toLowerCase())) ||
+    [];
+
+  // List of valid fields that the user can request
+  const VALID_FIELD_ENTRIES = [
+    'description',
+    'religion',
+    'articles',
+    'readings',
+    'sources',
+  ];
+
+  let DEFAULT_REQUIRED_DB_FIELDS =
+    '_id slug name timeline description.oneline otherNames born died dynasty';
+
+  userRequestedFields.forEach(function (field) {
+    if (field === 'readings') {
+      DEFAULT_REQUIRED_DB_FIELDS += ' furtherReading';
+    }
+
+    if (checkValidQueryField(VALID_FIELD_ENTRIES, field)) {
+      DEFAULT_REQUIRED_DB_FIELDS += ` ${field === 'description' ? 'description.long' : field}`;
+    }
+  });
+
   try {
     // Use MongoDB find query to get all matches with 'name' or 'otherNames' properties
     const rulers = await Rulers.find({
@@ -430,7 +462,7 @@ async function getRulersBySearch(request, response) {
         { name: { $regex: search, $options: 'i' } },
         { otherNames: { $elemMatch: { $regex: search, $options: 'i' } } },
       ],
-    });
+    }).select(DEFAULT_REQUIRED_DB_FIELDS);
 
     // Return success response
     return response.status(200).json({
