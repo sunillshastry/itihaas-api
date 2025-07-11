@@ -19,7 +19,7 @@ const checkValidQueryField = require('@/utils/checkValidQueryField');
 async function getAllRulers(request, response) {
   try {
     const DEFAULT_REQUIRED_DB_FIELDS =
-      '_id slug name timeline description.oneline otherNames born died dynasty';
+      '_id slug name timeline description.oneline otherNames born died dynasty createdAt updatedAt';
 
     // Query to find all rulers from the database
     const rulers = await Rulers.find().select(DEFAULT_REQUIRED_DB_FIELDS);
