@@ -17,7 +17,8 @@ const convertStringToBoolean = require('../utils/convertStringToBoolean');
  *
  * @param {Object} request Default Express Request object
  * @param {Object} response Default Express Response object
- * @returns A response with status code 200 or 500 signifying success or failure respectively
+ * @returns A response with status code 200 or 500 signifying success or failure
+ *     respectively
  */
 async function getAllDynasties(request, response) {
   try {
@@ -107,7 +108,8 @@ async function getAllDynasties(request, response) {
  *
  * @param {Object} request Default Express Request object
  * @param {Object} response Default Express Response object
- * @returns A response with status code 200, 404 or 500 signifying success or failures respectively
+ * @returns A response with status code 200, 404 or 500 signifying success or
+ *     failures respectively
  */
 async function getDynastiesById(request, response) {
   const { id } = request.params;
@@ -180,7 +182,8 @@ async function getDynastiesById(request, response) {
  *
  * @param {Object} request Default Express Request object
  * @param {Object} response Default Express Response object
- * @returns A response with status code 200, 404 or 500 signifying success or failure respectively
+ * @returns A response with status code 200, 404 or 500 signifying success or
+ *     failure respectively
  */
 async function getDynastyBySlugName(request, response) {
   const { slug } = request.params;
@@ -249,11 +252,13 @@ async function getDynastyBySlugName(request, response) {
 }
 
 /**
- * Controller function to get a list of dynasty names with specified 'id' or 'slug' fields
+ * Controller function to get a list of dynasty names with specified 'id' or
+ * 'slug' fields
  *
  * @param {Object} request Default Express request object
  * @param {Object} response Default Express response object
- * @returns A response code with status code 200, 404 or 500 signifying success or failure respectively
+ * @returns A response code with status code 200, 404 or 500 signifying success
+ *     or failure respectively
  */
 async function getDynastyTitles(request, response) {
   // Retrieve the only query
@@ -374,7 +379,8 @@ async function getDynastyTitles(request, response) {
  *
  * @param {Object} request Default Express request object
  * @param {Object} response Default Express response object
- * @returns A response code with status code 200, 404 or 500 signifying success or failure respectively
+ * @returns A response code with status code 200, 404 or 500 signifying success
+ *     or failure respectively
  */
 async function getRandomDynasty(request, response) {
   try {
@@ -452,12 +458,14 @@ async function getRandomDynasty(request, response) {
  *
  * @param {Object} request Default Express request object
  * @param {Object} response Default Express response object
- * @returns A response code with status code 200, 404 or 500 signifying success or failure respectively
+ * @returns A response code with status code 200, 404 or 500 signifying success
+ *     or failure respectively
  */
 async function getDynastiesBySearch(request, response) {
   const { search } = request.params;
   try {
-    // Use MongoDB find query to get all matches with 'name' or 'otherNames' properties
+    // Use MongoDB find query to get all matches with 'name' or 'otherNames'
+    // properties
     const dynasties = await Dynasties.find({
       $or: [
         { name: { $regex: search, $options: 'i' } },
@@ -469,6 +477,7 @@ async function getDynastiesBySearch(request, response) {
     return response.status(200).json({
       success: true,
       size: dynasties.length,
+      entity: 'dynasty',
       data: {
         dynasties,
       },

@@ -436,6 +436,7 @@ async function getRulersBySearch(request, response) {
     return response.status(200).json({
       success: true,
       size: rulers.length,
+      entity: 'ruler',
       data: {
         rulers,
       },
