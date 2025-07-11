@@ -15,6 +15,9 @@
     "type": "git",
     "url": "git+https://github.com/sunillshastry/itihaas-api.git"
   },
+  "_moduleAliases": {
+    "@": "./"
+  },
   "keywords": [],
   "author": "",
   "license": "GPL-3.0-only",
@@ -28,6 +31,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "helmet": "^8.1.0",
+    "module-alias": "^2.2.3",
     "mongoose": "^8.13.0",
     "morgan": "^1.10.0",
     "nodemon": "^3.1.9"
@@ -36,6 +40,7 @@
     "eslint": "^8.57.1",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^10.1.1",
+    "eslint-import-resolver-alias": "^1.1.2",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-prettier": "^5.2.5",
     "prettier": "^3.5.3"
