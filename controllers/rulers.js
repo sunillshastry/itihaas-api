@@ -461,6 +461,7 @@ async function getRulersBySearch(request, response) {
       $or: [
         { name: { $regex: search, $options: 'i' } },
         { otherNames: { $elemMatch: { $regex: search, $options: 'i' } } },
+        { dynasty: { $regex: search, $options: 'i' } },
       ],
     }).select(DEFAULT_REQUIRED_DB_FIELDS);
 
