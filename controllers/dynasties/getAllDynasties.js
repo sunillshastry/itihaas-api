@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 // Models
-const Dynasties = require('../../models/Dynasties');
+const Dynasties = require('@/models/Dynasties');
 
 // Services
 const FailureLogs = require('../../services/FailureLogs');

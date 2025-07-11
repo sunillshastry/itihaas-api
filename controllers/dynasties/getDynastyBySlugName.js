@@ -4,11 +4,11 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 // Models
-const Dynasties = require('../../models/Dynasties');
+const Dynasties = require('@/models/Dynasties');
 
 // Services
-const FailureLogs = require('../../services/FailureLogs');
-const AppException = require('../../services/AppException');
+const FailureLogs = require('@/services/FailureLogs');
+const AppException = require('@/services/AppException');
 
 /**
  * Controller function to get a dynasty by its slug name for dynasties route

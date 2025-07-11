@@ -4,10 +4,10 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 // Local imports
-const Rulers = require('../models/Rulers');
-const AppException = require('../services/AppException');
-const FailureLogs = require('../services/FailureLogs');
-const checkValidQueryField = require('../utils/checkValidQueryField');
+const Rulers = require('@/models/Rulers');
+const AppException = require('@/services/AppException');
+const FailureLogs = require('@/services/FailureLogs');
+const checkValidQueryField = require('@/utils/checkValidQueryField');
 
 /**
  * Get a list of all rulers

@@ -1,4 +1,5 @@
 // Package imports
+require('module-alias/register');
 const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
@@ -9,9 +10,9 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 // Local imports
-const dynastiesRouter = require('./routes/dynasties');
-const rulersRouter = require('./routes/rulers');
-const createDatabaseConnection = require('./database/config');
+const dynastiesRouter = require('@/routes/dynasties');
+const rulersRouter = require('@/routes/rulers');
+const createDatabaseConnection = require('@/database/config');
 
 const app = express();
 const HOST = process.env.SERVER_HOST;
