@@ -8,6 +8,14 @@
     "ecmaVersion": 12,
     "sourceType": "module"
   },
+  "settings": {
+    "import/resolver": {
+      "alias": {
+        "map": [["@", "./"]],
+        "extensions": [".js", ".json"]
+      }
+    }
+  },
   "rules": {
     "no-console": "off",
     "consistent-return": "off",
