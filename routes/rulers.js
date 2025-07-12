@@ -1,12 +1,10 @@
+const getAllRulers = require('@/controllers/rulers/getAllRulers');
+const getRandomRuler = require('@/controllers/rulers/getRandomRuler');
+const getRulerById = require('@/controllers/rulers/getRulerById');
+const getRulerBySlugName = require('@/controllers/rulers/getRulerBySlugName');
+const getRulersBySearch = require('@/controllers/rulers/getRulersBySearch');
+const getRulerTitles = require('@/controllers/rulers/getRulerTitles');
 const express = require('express');
-const {
-  getAllRulers,
-  getRulerById,
-  getRulerBySlugName,
-  getRulerTitles,
-  getRandomRuler,
-  getRulersBySearch,
-} = require('../controllers/rulers');
 
 const router = express.Router();
 
