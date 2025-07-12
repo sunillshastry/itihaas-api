@@ -10,8 +10,8 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 // Local imports
-const dynastiesRouter = require('@/routes/dynasties');
-const rulersRouter = require('@/routes/rulers');
+const dynastiesRouter = require('@/routes/dynasties.routes');
+const rulersRouter = require('@/routes/rulers.routes');
 const createDatabaseConnection = require('@/database/config');
 
 const app = express();

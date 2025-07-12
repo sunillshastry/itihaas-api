@@ -61,6 +61,7 @@ async function getDynastiesBySearch(request, response) {
       $or: [
         { name: { $regex: search, $options: 'i' } },
         { otherNames: { $elemMatch: { $regex: search, $options: 'i' } } },
+        { locations: { $elemMatch: { $regex: search, $options: 'i' } } },
       ],
     }).select(DEFAULT_REQUIRED_DB_FIELDS);
 

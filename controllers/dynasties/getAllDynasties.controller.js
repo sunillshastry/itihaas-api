@@ -43,7 +43,7 @@ async function getAllDynasties(request, response) {
 
     // Required fields from database (Default base fields)
     let DEFAULT_REQUIRED_DB_FIELDS =
-      '_id slug name timeline capitals population locations description.oneline otherNames';
+      '_id slug name timeline capitals population locations description.oneline otherNames createdAt updatedAt';
 
     // Append any additional user requested fields
     userRequestedFields.forEach(function (field) {
