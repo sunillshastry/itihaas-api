@@ -1,11 +1,11 @@
 // Package imports
 const express = require('express');
-const getAllDynasties = require('@/controllers/dynasties/getAllDynasties');
-const getDynastyTitles = require('@/controllers/dynasties/getDynastyTitles');
-const getRandomDynasty = require('@/controllers/dynasties/getRandomDynasty');
-const getDynastiesBySearch = require('@/controllers/dynasties/getDynastiesBySearch');
-const getDynastiesById = require('@/controllers/dynasties/getDynastiesById');
-const getDynastyBySlugName = require('@/controllers/dynasties/getDynastyBySlugName');
+const getAllDynasties = require('@/controllers/dynasties/getAllDynasties.controller');
+const getDynastyTitles = require('@/controllers/dynasties/getDynastyTitles.controller');
+const getRandomDynasty = require('@/controllers/dynasties/getRandomDynasty.controller');
+const getDynastiesBySearch = require('@/controllers/dynasties/getDynastiesBySearch.controller');
+const getDynastiesById = require('@/controllers/dynasties/getDynastiesById.controller');
+const getDynastyBySlugName = require('@/controllers/dynasties/getDynastyBySlugName.controller');
 
 const router = express.Router();
 
