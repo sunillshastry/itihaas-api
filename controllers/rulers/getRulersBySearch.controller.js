@@ -37,7 +37,7 @@ async function getRulersBySearch(request, response) {
   ];
 
   let DEFAULT_REQUIRED_DB_FIELDS =
-    '_id slug name timeline description.oneline otherNames born died dynasty';
+    '_id slug name timeline description.oneline otherNames born died dynasty createdAt updatedAt';
 
   userRequestedFields.forEach(function (field) {
     if (field === 'readings') {
