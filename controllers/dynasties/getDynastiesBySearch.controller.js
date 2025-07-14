@@ -42,7 +42,7 @@ async function getDynastiesBySearch(request, response) {
   ];
 
   let DEFAULT_REQUIRED_DB_FIELDS =
-    '_id slug name timeline capitals population locations description.oneline otherNames';
+    '_id slug name timeline capitals population locations description.oneline otherNames updatedAt createdAt';
 
   userRequestedFields.forEach(function (field) {
     if (field === 'readings') {
