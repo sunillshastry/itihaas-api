@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 /**
- *
+ * Get health status of the Itihaas API
  * @param {object} request Default Express request object
  * @param {object} response Default Express response object
  * @returns A health-check response with status code 200 or 500 signifying success or failure
