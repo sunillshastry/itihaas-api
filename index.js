@@ -14,6 +14,7 @@ const dynastiesRouter = require('@/routes/dynasties.routes');
 const rulersRouter = require('@/routes/rulers.routes');
 const createDatabaseConnection = require('@/database/config');
 const healthCheckRouter = require('@/routes/healthcheck.routes');
+const versionRouter = require('@/routes/version.routes');
 
 const app = express();
 const HOST = process.env.SERVER_HOST;
@@ -32,6 +33,7 @@ app.use(helmet());
 app.use('/api/v1/dynasties', dynastiesRouter);
 app.use('/api/v1/rulers', rulersRouter);
 app.use('/api/health', healthCheckRouter);
+app.use('/api/version', versionRouter);
 
 if (HOST && PORT) {
   app.listen(PORT, HOST, function () {
