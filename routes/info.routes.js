@@ -1,4 +1,4 @@
-const getApiInfo = require('@/controllers/info/getApiInfo');
+const getApiInfo = require('@/controllers/info/getApiInfo.controller');
 const express = require('express');
 
 const router = express.Router();
