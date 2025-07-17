@@ -1,6 +1,6 @@
 # itihaas-api
 
-A comprehensive application where users can view/read/learn and cite about Indian History. The application will cover all relevant events within the geographical extent of the Indian subcontinent and in the timeline between 7000 BCE (Mehrgarh Civilization, Indus Valley Civilization) and 1947 (Indian Independence). The entire process for the consequent fully functional application is divided into the following steps, in the written order.
+Itihaas is a comprehensive application where users can view/read/learn and cite about Indian History. The application will cover all relevant events within the geographical extent of the Indian subcontinent and in the timeline between 7000 BCE (Mehrgarh Civilization, Indus Valley Civilization) and 1947 (Indian Independence). The entire process for the consequent fully functional application is divided into the following steps, in the written order.
 
 ## Information Categories
 
@@ -10,16 +10,21 @@ A comprehensive application where users can view/read/learn and cite about India
 
 ## Features
 
-- GET a list of dynasties with basic information.
-- GET individual dynasties with extended information.
-- GET a list of all rulers with basic information.
-- GET individual rulers with extended information.
-- GET a list of all wars with basic information.
-- GET individual wars with extended information.
-- Filter through dynasties, rulers, and wars to access information.
-- Retrieve articles, further reading sources, and additional data regarding an entity.
-- Get the entire history catalog chronologically.
-- Search feature: search for specifics (search feature lets you search about dynasties, rulers, and wars at the same time).
+- Access individual or list of dynasties with customized or full data collection.
+- Access dynasties list with extended information via queries.
+- Access individual or list of rulers with customized or full data collection.
+- Access rulers list with extended information via queries.
+- Access individual or list of wars with customized or full data collection.
+- Access wars list with extended information via queries.
+- Perform advanced filtering and sorting via the client app ([itihaas.dev](https://itihaas.dev)), or via HTTP requests with `itihaas-api` through dynasties, rulers, and wars to access information.
+- Gain access to open-source articles, further reading sources, and additional data regarding an entity (dynasty/war/ruler).
+- View chronological structure of Indian history.
+- Search feature: Perform seamless search via the client app ([itihaas.dev](https://itihaas.dev)), or through HTTP requests with `itihaas-api`, while customizing requests for additional information within search.
+- Platform Growth: Provides a platform to help Itihaas grow by user submissions for new entries, existing fixes and bugs and updating current info within the catalog database.
+
+## Open API (Itihaas API)
+
+[`itihaas-api`](https://github.com/sunillshastry/itihaas-api) provides free to use REST API for public usage. The REST API comes with pre-built rate-limiting, RESTful pattern, and requires user registration for API key. Please check the [documentation](https://github.com/sunillshastry/itihaas-api) to learn more about `itihaas-api`.
 
 ## Developer
 
@@ -39,47 +44,90 @@ The Schema for Rulers, Dynasties, and Wars is extensive; not all values will be 
 
 ```typescript
 {
-	slug: string,
-	name: string,
-	otherNames: string[],
+	_id: string; // Unique identifier value
+	slug: string; // Unique identifier value
+	name: string;
+	otherNames: string[];
 	timeline: {
 		begin: string,
-		end: string
+		end: string,
 	},
-	capitals: string[],
-	languages: string[],
-	religions: string[],
+	capitals: string[];
+	languages: string[];
+	religions: string[];
 	area: {
-		lowest: number,
-		highest: number
-	},
-	population: number | string,
-	currencies: string[],
-	locations: string[],
-	rulers: string[],
-	wars: string[],
+		lowest: number | string,
+		highest: number | string,
+	};
+	population: number | string;
+	currencies: string[];
+	locations: string[];
+	rulers: string[];
+	wars: string[];
 	description: {
 		oneline: string,
-		long: string[]
-	},
-	sources: string[],
+		long: string[],
+	};
+	sources: string[];
 	furtherReading: {
-		publisherName: string // publisherName: link
-	},
-	articles: [
-		{
-			title: string,
-			authors: string[],
-			publisher: string,
-			link: string
-		}
-	]
+		publisher: string,
+		link: string,
+		_id: string; // Unique identifier (for readings)
+	}[];
+	articles: {
+		title: string,
+		authors: string[],
+		publisher: string,
+		link: string
+		_id: string; // Unique identifier (for articles)
+	}[];
 }
 ```
 
 ### Ruler.Schema
 
-Not Available at the moment. Sorry for the inconvenience
+```typescript
+{
+	_id: string; // Unique identifier value
+	slug: string; // Unique identifier value
+	name: string;
+	otherNames: string[];
+	born: string;
+	died: string;
+	dynasty: string;
+	religion: string;
+	predecessor: string;
+	successor: string;
+	family: {
+		father: string;
+		mother: string;
+		children: string[];
+		wives: string;
+	} | null;
+	wars: string[];
+	timeline: {
+		begin: string;
+		end: string;
+	} | null;
+	description: {
+		oneline: string;
+		long: string[];
+	};
+	sources: string[];
+	furtherReadings: {
+		publisher: string;
+		link: string;
+		_id: string; // Unique identifier (for readings)
+	}[];
+	articles: {
+		publisher: string;
+		authors: string[];
+		title: string;
+		link: string;
+		_id: string; // Unique identifier (for articles)
+	}[];
+}
+```
 
 ### War.Schema
 
@@ -109,6 +157,19 @@ The following contains the timeline information for dynasties that existed in th
 - Mitra Dynasty
 
 ...and more.
+
+## Tech Stack
+
+Below, you will find the full, transparent tech stack used for the backend application for Itihaas.
+
+> To view the tech stack for the frontend, please visit [here](https://github.com/sunillshastry/itihaas-client).
+
+- **Core**: Node.js, Express.js.
+- **Databases**: MongoDB, MongoDB Atlas, Redis, Upstash.
+- **Containerization/Infrastructure**: Docker.
+- **Libraries**: Mongoose, Express Rate Limiter, Morgan, SendGrid.
+- **Linting and Formatting**: ESLint, Prettier, Airbnb Style Guide.
+- **Tests**: Jest, Supertest, Postman.
 
 ## Endpoints
 
