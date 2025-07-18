@@ -9,6 +9,7 @@ const Dynasties = require('@/models/Dynasties');
 // Services
 const FailureLogs = require('@/services/FailureLogs');
 const AppException = require('@/services/AppException');
+const redisClient = require('@/cache/ioRedisConfig');
 
 /**
  * Controller function to get a dynasty by its slug name for dynasties route
@@ -21,6 +22,19 @@ const AppException = require('@/services/AppException');
 async function getDynastyBySlugName(request, response) {
   const { slug } = request.params;
   try {
+    // Check for cached data
+    const cacheKey = `dynasty:${slug}`;
+    const cachedData = await redisClient.get(cacheKey);
+
+    if (cachedData) {
+      return response.status(200).json({
+        success: true,
+        data: {
+          dynasty: JSON.parse(cachedData),
+        },
+      });
+    }
+
     // Get dynasty from database via its slug
     const dynasty = await Dynasties.findOne({ slug });
 
@@ -49,6 +63,9 @@ async function getDynastyBySlugName(request, response) {
         message: FailureLogs.entityNotFound(),
       });
     }
+
+    // Set retrieved data from database to cache
+    await redisClient.set(cacheKey, JSON.stringify(dynasty), 'EX', 3600);
 
     // Return success response
     return response.status(200).json({
