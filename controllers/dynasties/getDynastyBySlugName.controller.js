@@ -22,12 +22,16 @@ const redisClient = require('@/cache/ioRedisConfig');
 async function getDynastyBySlugName(request, response) {
   const { slug } = request.params;
   try {
-    // Check for cached data
+    // Check for cached 'slug' key data
     const cacheKeyId = `dynasty:slug:${slug}`;
+
+    // If cached slug key exists
     if (cacheKeyId) {
+      // Get cached dynasty data via the 'id' property
       const idKey = `dynasty:${cacheKeyId}`;
       const cacheData = await redisClient.get(idKey);
 
+      // If any cached dynasty data exists from the 'id' property
       if (cacheData) {
         return response.status(200).json({
           success: true,
@@ -38,12 +42,16 @@ async function getDynastyBySlugName(request, response) {
       }
     }
 
+    // No cache hits:
     // Get dynasty from database via its slug
     const dynasty = await Dynasties.findOne({ slug });
 
     // Check if dynasty does not exist - return 404
     if (!dynasty) {
+      // Delete cache key
       await redisClient.del(cacheKeyId);
+
+      // Build AppException
       const appException = new AppException(
         'Failed to locate specified resource in database',
         404,
@@ -54,6 +62,7 @@ async function getDynastyBySlugName(request, response) {
         'controllers.dynasties.getDynastyBySlugName',
       );
 
+      // Return 404 responses
       if (process.env.NODE_ENV === 'development') {
         return response.status(404).json({
           success: false,
@@ -68,7 +77,8 @@ async function getDynastyBySlugName(request, response) {
       });
     }
 
-    // Set retrieved data from database to cache
+    // Set retrieved data from database to cache system
+    // First: Set actual dynasty content via dynasty._id value key
     // eslint-disable-next-line no-underscore-dangle
     const idKey = `dynasty:${dynasty._id}`;
     await redisClient.set(
@@ -78,6 +88,7 @@ async function getDynastyBySlugName(request, response) {
       process.env.UPSTASH_REDIS_TTL_DURATION,
     );
 
+    // Second: Set dynasty._id value via dynasty:slug key
     await redisClient.set(
       cacheKeyId,
       // eslint-disable-next-line no-underscore-dangle
