@@ -23,16 +23,19 @@ async function getDynastyBySlugName(request, response) {
   const { slug } = request.params;
   try {
     // Check for cached data
-    const cacheKey = `dynasty:${slug}`;
-    const cachedData = await redisClient.get(cacheKey);
+    const cacheKeyId = `dynasty:slug:${slug}`;
+    if (cacheKeyId) {
+      const idKey = `dynasty:${cacheKeyId}`;
+      const cacheData = await redisClient.get(idKey);
 
-    if (cachedData) {
-      return response.status(200).json({
-        success: true,
-        data: {
-          dynasty: JSON.parse(cachedData),
-        },
-      });
+      if (cacheData) {
+        return response.status(200).json({
+          success: true,
+          data: {
+            dynasty: JSON.parse(cacheData),
+          },
+        });
+      }
     }
 
     // Get dynasty from database via its slug
@@ -40,6 +43,7 @@ async function getDynastyBySlugName(request, response) {
 
     // Check if dynasty does not exist - return 404
     if (!dynasty) {
+      await redisClient.del(cacheKeyId);
       const appException = new AppException(
         'Failed to locate specified resource in database',
         404,
@@ -65,7 +69,22 @@ async function getDynastyBySlugName(request, response) {
     }
 
     // Set retrieved data from database to cache
-    await redisClient.set(cacheKey, JSON.stringify(dynasty), 'EX', 3600);
+    // eslint-disable-next-line no-underscore-dangle
+    const idKey = `dynasty:${dynasty._id}`;
+    await redisClient.set(
+      idKey,
+      JSON.stringify(dynasty),
+      'EX',
+      process.env.UPSTASH_REDIS_TTL_DURATION,
+    );
+
+    await redisClient.set(
+      cacheKeyId,
+      // eslint-disable-next-line no-underscore-dangle
+      dynasty._id.toString(),
+      'EX',
+      process.env.UPSTASH_REDIS_TTL_DURATION,
+    );
 
     // Return success response
     return response.status(200).json({
