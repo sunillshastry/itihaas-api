@@ -10,7 +10,8 @@
     "format-check": "prettier --check .",
     "lint-check": "eslint .",
     "lint": "eslint --fix .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "stage": "lint-staged"
   },
   "repository": {
     "type": "git",
