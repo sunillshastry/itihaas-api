@@ -9,7 +9,8 @@
     "format": "prettier --write .",
     "format-check": "prettier --check .",
     "lint-check": "eslint .",
-    "lint": "eslint --fix ."
+    "lint": "eslint --fix .",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
