@@ -7,7 +7,9 @@ const redisClient = new Redis(process.env.UPSTASH_REDIS_CONNECTION_STRING, {
 });
 
 redisClient.on('connect', function () {
-  console.log('Successfully connected to cache storage');
+  console.log(
+    `Successfully established connection to cache storage: ${redisClient?.options?.host}`,
+  );
 });
 
 redisClient.on('error', function (error) {
