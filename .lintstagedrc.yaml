@@ -5,8 +5,8 @@
 '*.js':
   - 'eslint --fix'
 
-'**/*.{js, json, md}':
+'**/*.{js,json,md,yaml,yml}':
   - 'prettier --write'
 
-'*.{js, json, md}':
+'*.{js,json,md,yaml,yml}':
   - 'prettier --write'
