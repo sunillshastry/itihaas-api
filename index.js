@@ -16,6 +16,7 @@ const createDatabaseConnection = require('@/database/config');
 const healthCheckRouter = require('@/routes/healthcheck.routes');
 const versionRouter = require('@/routes/version.routes');
 const infoRouter = require('@/routes/info.routes');
+const baseRouter = require('@/routes/base.routes');
 
 const app = express();
 const HOST = process.env.SERVER_HOST;
@@ -31,6 +32,7 @@ app.use(cors());
 app.use(helmet());
 
 // Routing
+app.use('/', baseRouter);
 app.use('/api/v1/dynasties', dynastiesRouter);
 app.use('/api/v1/rulers', rulersRouter);
 app.use('/api/health', healthCheckRouter);
