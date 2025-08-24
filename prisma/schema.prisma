@@ -21,5 +21,7 @@ model User {
 	usage_reason String?
 	privacy_agreement Boolean
 	captcha String
-	api_key String
+	api_key String @unique
+
+	@@map("users")
 }
