@@ -4,6 +4,6 @@ const express = require('express');
 
 const router = express.Router({ strict: false });
 
-router.post('/register-api', apiRegistration);
+router.post('/register', apiRegistration);
 
 module.exports = router;
