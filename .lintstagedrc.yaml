@@ -1,6 +1,12 @@
 # Running ESLint on staged files
-'*.{js}':
+'**/*.js':
   - 'eslint --fix'
 
-'*.{js, json, md}':
+'*.js':
+  - 'eslint --fix'
+
+'**/*.{js,json,md,yaml,yml}':
+  - 'prettier --write'
+
+'*.{js,json,md,yaml,yml}':
   - 'prettier --write'
