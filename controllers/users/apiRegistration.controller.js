@@ -1,85 +1,51 @@
 // const prisma = require('@/database/prisma');
+const prisma = require('@/database/prisma');
 const AppException = require('@/services/AppException');
 const FailureLogs = require('@/services/FailureLogs');
-const generateApiKey = require('@/utils/generateApiKey');
+const verifyTokenValidation = require('@/utils/verifyTokenValidation');
 
 async function apiRegistration(request, response) {
   try {
-    let { name, email } = request.body;
-    const { usageReason, privacyAgreement, captcha } = request.body;
-
-    // Validations
-    if (!name || name.trim().length < 5) {
+    // Get the verification token and validate its presence
+    const { token } = request.body;
+    if (!token) {
       return response.status(400).json({
         success: false,
-        message:
-          'Name is a required field and its value must be at least five characters long',
+        message: 'Required fields: token',
       });
     }
-    name = name.trim();
 
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!email || !emailRegex.test(email)) {
-      return response.status(400).json({
+    // Check if the token is still valid
+    const decoded = await verifyTokenValidation(token);
+    if (decoded === null || !decoded.id) {
+      return response.status(401).json({
         success: false,
-        message:
-          'Email is a required field and its value must be a valid email',
-      });
-    }
-    email = email.toLowerCase();
-
-    if (!privacyAgreement || privacyAgreement !== true) {
-      return response.status(400).json({
-        success: false,
-        message:
-          'THe privacyAgreement field is required and must be true. User must agree to the privacy policy and terms of service to register',
+        expired: true,
+        message: `Provided token has expired. Please use the 'resend' service for a new verification link`,
       });
     }
 
-    if (!captcha) {
-      return response.status(400).json({
-        success: false,
-        message: 'Captcha field is required',
-      });
-    }
+    // Update the user's 'verified' status to true
+    const user = await prisma.user.update({
+      where: {
+        id: decoded?.id,
+      },
+      data: {
+        verified: true,
+      },
+    });
 
-    // TODO: Test for correct captcha verification from recaptcha
+    // Retrieve the apiKey field from the user's entity
+    const apiKey = user.api_key;
 
-    // Get API key for the user
-    const apiKey = generateApiKey();
+    // TODO: Implement functionality/logic to send emails to user
+    // Send email to the user with the apiKey present in it
 
-    // Create the User field in database
-    // const user = await prisma.user.create({
-    //   data: {
-    //     name,
-    //     email,
-    //     usage_reason: usageReason,
-    //     privacy_agreement: privacyAgreement,
-    //     captcha,
-    //     api_key: apiKey,
-    //   },
-    // });
-    const user = {
-      name,
-      email,
-      usage_reason: usageReason,
-      privacy_agreement: privacyAgreement,
-      captcha,
-      api_key: apiKey,
-    };
-
-    // TODO: Implement feature to send email to user with the API key
-    // Send email with API key to the user
-
-    if (user) {
-      return response.status(201).json({
-        success: true,
-        data: {
-          user,
-        },
-        apiKey: user?.api_key,
-      });
-    }
+    return response.status(200).json({
+      success: true,
+      message: 'Successfully verified user registration',
+      apiKey,
+    });
   } catch (e) {
     // Custom app error log
     const appException = new AppException(

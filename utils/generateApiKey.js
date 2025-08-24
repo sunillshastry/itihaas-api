@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 
-function generateApiKey(length = 32) {
+function generateApiKey(length = 50) {
   return crypto.randomBytes(length).toString('hex');
 }
 
