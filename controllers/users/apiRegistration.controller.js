@@ -18,9 +18,10 @@ async function apiRegistration(request, response) {
     // Check if the token is still valid
     const decoded = await verifyTokenValidation(token);
     if (decoded === null || !decoded.id) {
-      return response.status(403).json({
+      return response.status(401).json({
         success: false,
-        message: 'Your token has expired. Please try again!',
+        expired: true,
+        message: `Provided token has expired. Please use the 'resend' service for a new verification link`,
       });
     }
 
