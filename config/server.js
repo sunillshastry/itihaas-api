@@ -15,6 +15,7 @@ const healthCheckRouter = require('@/routes/healthcheck.routes');
 const versionRouter = require('@/routes/version.routes');
 const infoRouter = require('@/routes/info.routes');
 const baseRouter = require('@/routes/base.routes');
+const usersRouter = require('@/routes/users.routes');
 
 const app = express();
 
@@ -31,6 +32,8 @@ app.use(helmet());
 app.use('/', baseRouter);
 app.use('/api/v1/dynasties', dynastiesRouter);
 app.use('/api/v1/rulers', rulersRouter);
+app.use('/api/v1/users', usersRouter);
+
 app.use('/api/health', healthCheckRouter);
 app.use('/api/version', versionRouter);
 app.use('/api/info', infoRouter);
