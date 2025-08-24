@@ -11,7 +11,10 @@
     "lint-check": "eslint .",
     "lint": "eslint --fix .",
     "prepare": "husky",
-    "stage": "lint-staged"
+    "stage": "lint-staged",
+    "db:generate": "prisma generate",
+    "db:studio": "prisma studio",
+    "db:migrate": "prisma migrate"
   },
   "repository": {
     "type": "git",
