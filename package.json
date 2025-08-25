@@ -32,7 +32,6 @@
   "homepage": "https://github.com/sunillshastry/itihaas-api#readme",
   "dependencies": {
     "@prisma/client": "^6.14.0",
-    "@upstash/workflow": "^0.2.17",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
