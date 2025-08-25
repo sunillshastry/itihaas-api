@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "node index.js && npx prisma generate",
+    "dev": "nodemon index.js && npx prisma generate",
     "format": "prettier --write .",
     "format-check": "prettier --check .",
     "lint-check": "eslint .",
