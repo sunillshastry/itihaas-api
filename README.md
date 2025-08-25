@@ -165,10 +165,10 @@ Below, you will find the full, transparent tech stack used for the backend appli
 > To view the tech stack for the frontend, please visit [here](https://github.com/sunillshastry/itihaas-client).
 
 - **Core**: Node.js, Express.js.
-- **Databases**: MongoDB, MongoDB Atlas, Redis, Upstash.
-- **Containerization/Infrastructure**: Docker.
-- **Libraries**: Mongoose, Express Rate Limiter, Morgan, SendGrid.
-- **Linting and Formatting**: ESLint, Prettier, Airbnb Style Guide.
+- **Databases**: MongoDB, MongoDB Atlas, Redis, Upstash, PostgreSQL, Neon.
+- **Containerization/Infrastructure**: Docker, docker-compose.
+- **Libraries**: Prisma, Mongoose, Express Rate Limiter, Resend.
+- **Linting and Formatting**: ESLint, Prettier, Husky, Airbnb Style Guide.
 - **Tests**: Jest, Supertest, Postman.
 
 ## Endpoints
