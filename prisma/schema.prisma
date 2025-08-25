@@ -15,14 +15,16 @@ datasource db {
 }
 
 model User {
-	id String @id @default(uuid()) // Replace default 'SERIAL' type ID with UUID
-	name String
-	email String @unique
-	usage_reason String?
-	privacy_agreement Boolean
-	captcha String
-	api_key String @unique
-	verified Boolean
+  id                String   @id @default(uuid()) // Replace default 'SERIAL' type ID with UUID
+  name              String
+  email             String   @unique
+  usage_reason      String?
+  privacy_agreement Boolean
+  captcha           String
+  api_key           String   @unique
+  verified          Boolean
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
-	@@map("users")
+  @@map("users")
 }
