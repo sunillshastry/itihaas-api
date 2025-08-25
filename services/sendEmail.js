@@ -13,6 +13,7 @@ async function sendEmail() {
 
   const resend = new Resend(RESEND_API_KEY);
 
+  // TODO: Update the options/configuration to make the email sending service reusable
   const content = await resend.emails.send({
     from: 'Itihaas <testing@sunilshastry.com>',
     to: ['itihaas.dev@gmail.com', 'sunil.shastry69@gmail.com'],
