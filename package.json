@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "node index.js && npx prisma generate",
+    "dev": "nodemon index.js && npx prisma generate",
     "format": "prettier --write .",
     "format-check": "prettier --check .",
     "lint-check": "eslint .",
@@ -43,6 +43,7 @@
     "mongoose": "^8.13.0",
     "morgan": "^1.10.0",
     "nodemon": "^3.1.9",
+    "resend": "^6.0.1",
     "validator": "^13.15.15"
   },
   "devDependencies": {
