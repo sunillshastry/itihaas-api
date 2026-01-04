@@ -1,3 +1,6 @@
+/**
+ * Class for consistent failure message logging for various controller functions
+ */
 class FailureLogs {
   /**
    * Failure Log when database is unable to provide access to information in it
