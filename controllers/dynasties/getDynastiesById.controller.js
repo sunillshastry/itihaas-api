@@ -9,7 +9,7 @@ const Dynasties = require('@/models/Dynasties');
 // Services
 const FailureLogs = require('@/services/FailureLogs');
 const AppException = require('@/services/AppException');
-const redisClient = require('@/cache/ioRedisConfig');
+// const redisClient = require('@/cache/ioRedisConfig');
 
 /**
  * Controller function to get a dynasty by its ID parameter for dynasties route
@@ -22,20 +22,23 @@ const redisClient = require('@/cache/ioRedisConfig');
 async function getDynastiesById(request, response) {
   const { id } = request.params;
   try {
+    // WARNING: Removing/Commenting out the entire Redis cache check due to arising problems at the moment
     // Check for any cache from the caching system
-    const cacheKey = `dynasty:${id}`;
-    const cacheData = await redisClient.get(cacheKey);
+    // const cacheKey = `dynasty:${id}`;
+    // const cacheData = await redisClient.get(cacheKey);
 
     // If cache exists
-    if (cacheData) {
-      // Return success response with cached data
-      return response.status(200).json({
-        success: true,
-        data: {
-          dynasty: JSON.parse(cacheData),
-        },
-      });
-    }
+    // WARNING: Removing/Commenting out the entire Redis cache check due to arising problems at the moment
+    // TODO: Implement a better caching strategy with Redis and refactor or update this code segment in time.
+    // if (cacheData) {
+    //   // Return success response with cached data
+    //   return response.status(200).json({
+    //     success: true,
+    //     data: {
+    //       dynasty: JSON.parse(cacheData),
+    //     },
+    //   });
+    // }
 
     // Get dynasty from database
     const dynasty = await Dynasties.findById(id);
@@ -67,21 +70,23 @@ async function getDynastiesById(request, response) {
     }
 
     // Set new cache: dynasty content via dynasty._id as key value
-    await redisClient.set(
-      cacheKey,
-      JSON.stringify(dynasty),
-      'EX',
-      process.env.UPSTASH_REDIS_TTL_DURATION,
-    );
+    // WARNING: Removing/Commenting out the entire Redis cache check due to arising problems at the moment
+    // await redisClient.set(
+    //   cacheKey,
+    //   JSON.stringify(dynasty),
+    //   'EX',
+    //   process.env.UPSTASH_REDIS_TTL_DURATION,
+    // );
 
     // Additionally, set a slug:id key value prop as cache
-    const cacheSlugKey = `dynasty:slug:${dynasty.slug}`;
-    await redisClient.set(
-      cacheSlugKey,
-      id,
-      'EX',
-      process.env.UPSTASH_REDIS_TTL_DURATION,
-    );
+    // WARNING: Removing/Commenting out the entire Redis cache check due to arising problems at the moment
+    // const cacheSlugKey = `dynasty:slug:${dynasty.slug}`;
+    // await redisClient.set(
+    //   cacheSlugKey,
+    //   id,
+    //   'EX',
+    //   process.env.UPSTASH_REDIS_TTL_DURATION,
+    // );
 
     // Return success response
     return response.status(200).json({
