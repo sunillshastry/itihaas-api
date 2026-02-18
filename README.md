@@ -3,7 +3,7 @@
 ## Contents
 
 - [Introduction](#introduction)
-- Problem Statement
+- [Problem Statement](#problem-statement)
 - Current State of the Market
 - Competitors and Alternatives
 - Research Studies on Competitors and Alternatives
@@ -45,6 +45,12 @@
 **Itihaas** _(https://itihaas.dev)_ is a structured, community-driven Indian history platform designed to help students, researchers, and curious minds explore the vast history of the Indian subcontinent. Discover detailed profiles of dynasties, rulers, and wars - search specific entities, navigate the historical timeline chronologically, or contribute credible research to expand the growing catalog. Whether you're studying, researching, exploring out of curiosity, or building applications using historical data, Itihaas makes the history of the Indian subcontinent accessible, informative, and engaging.
 
 Itihaas offers an extensively curated platform where users can study and cite information about the Indian subcontinent’s history. Itihaas will cover all relevant events within the geographical extent of the Indian subcontinent and in the timelines between 7000 BCE _(accounting the first civilization, Mehrgarh Civilization, Indus Valley Civilization, and more)_, and 1947 _(Indian independence)_.
+
+## Problem Statement
+
+Students, researchers, and independent developers seeking structured and interconnected information about the history of the Indian subcontinent face significant challenges accessing reliable, chronologically organized, and interlinked historical data. Existing resources are fragmented across textbooks, academic publications, language obstacles, and unstructured web content, making it difficult to trace direct and indirect relationships between dynasties, rulers, wars, regions, and timelines. As a result, research becomes inefficient, citations lack consistency, and historical data remains difficult to access for both educational purposes and technical applications.
+
+While several platforms provide historical information, many do not offer comprehensive chronological coverage or structured, interconnected datasets spanning the full historical scope of the Indian subcontinent. Additionally, limited support for structured community contributions restricts collaborative expansion and continuous improvement of historical knowledge.
 
 <!--
 Itihaas is a comprehensive application where users can view/read/learn and cite about Indian History. The application will cover all relevant events within the geographical extent of the Indian subcontinent and in the timeline between 7000 BCE (Mehrgarh Civilization, Indus Valley Civilization) and 1947 (Indian Independence). The entire process for the consequent fully functional application is divided into the following steps, in the written order.
