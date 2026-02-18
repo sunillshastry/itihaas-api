@@ -5,8 +5,8 @@
 - [Introduction](#introduction)
 - [Problem Statement](#problem-statement)
 - [Current State of the Market](#current-state-of-the-market)
-- Competitors and Alternatives
-- Research Studies on Competitors and Alternatives
+- [Competitors and Alternatives (unavailable)](#competitors-and-alternatives)
+- [Research Studies on Competitors and Alternatives (unavailable)](#research-studies-on-competitors-and-alternatives)
 - High-Level Technical Deliverables Summary
 - Core Feature List
 - Personas
@@ -85,6 +85,14 @@ Historical information of the Indian subcontinent is no doubt widely available a
   Another certain drawback that is visible with most platforms is the inconsistent context or scope of the information provided on their platforms; this touches on the issues with platforms primarily focusing on very specific periods or dynasties, or to summarize in a thematic manner. Although these are great in certain use cases, particularly with deeper research on a specific topic, they do not encompass the wider picture in place - this includes the prerequisite dynasties that led to the existing one and its eventual decline and whatnot. Additionally, while many platforms cover aspects of the Indian subcontinent’s history, the comprehensive scope across the full temporal range of the subcontinent, from the early prehistoric settlements to the Indian independency, within a single, structured framework remains limited or absent altogether. As existing resources often specialize in particular dynasties, the outcome is that users frequently navigate between multiple specialized platforms rather than accessing a centralized historical knowledge system that is capable of interlinking and comparing entities across different timelines and geographies.
 
 As a conclusion, the current market for Indian historical information is rich in content but structurally dispersed. Information is widely available but rarely chronologically unified, relationally interlinked, machine-readable, or developer-accessible in a cohesive manner. Users compensate by manually aggregating fragmented materials, and technical innovation built upon historical data remains constrained by the absence of centralized, structured infrastructure.
+
+## Competitors and Alternatives
+
+**_Unfortunately, this section is unavailable for public view_**
+
+## Research Studies on Competitors and Alternatives
+
+**_Unfortunately, this section is unavailable for public view_**
 
 <!--
 Itihaas is a comprehensive application where users can view/read/learn and cite about Indian History. The application will cover all relevant events within the geographical extent of the Indian subcontinent and in the timeline between 7000 BCE (Mehrgarh Civilization, Indus Valley Civilization) and 1947 (Indian Independence). The entire process for the consequent fully functional application is divided into the following steps, in the written order.
