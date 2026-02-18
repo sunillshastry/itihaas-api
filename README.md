@@ -7,7 +7,7 @@
 - [Current State of the Market](#current-state-of-the-market)
 - [Competitors and Alternatives (unavailable)](#competitors-and-alternatives)
 - [Research Studies on Competitors and Alternatives (unavailable)](#research-studies-on-competitors-and-alternatives)
-- High-Level Technical Deliverables Summary
+- [Technical Deliverables Summary](#technical-deliverables-summary)
 - Core Feature List
 - Personas
   - Primary Target Audience and Users
@@ -93,6 +93,29 @@ As a conclusion, the current market for Indian historical information is rich in
 ## Research Studies on Competitors and Alternatives
 
 **_Unfortunately, this section is unavailable for public view_**
+
+## Technical Deliverables Summary
+
+The final release of Itihaas will deliver a fully operational, production-ready historical knowledge platform consisting of a public web application, a structured historical database, and an open developer-facing API ecosystem. The system will be designed to support both general users seeking to explore Indian history and developers or researchers who require structured, programmatic access to historical data.
+
+At its core, Itihaas will provide a modern, responsive website that allows users to browse, search, and explore Indian history through structured entity relationships. Users will be able to discover dynasties, rulers, wars, timelines, and related historical entities through intuitive navigation, advanced search functionality, and interconnected data models. The platform will emphasize relational discovery, enabling users to move seamlessly between entities such as a ruler and the dynasty they belong to, wars they participated in, and the chronological timeline surrounding their reign. The user interface will prioritize clarity, accessibility, and structured presentation of information while maintaining strong citation standards and editorial consistency.
+
+In addition to passive exploration, the platform will support controlled user contributions. Authenticated users will be able to submit new entries, suggest edits, and contribute structured historical data through a moderated submission workflow. Submissions will follow predefined schemas to ensure consistency, maintain data integrity, and preserve relational correctness across entities. An internal moderation and review system will allow administrators to validate contributions before publication, ensuring the credibility and quality of the platform’s content.
+
+Beyond the public website, Itihaas will provide a free, publicly accessible API designed for developers, educators, researchers, and third-party applications. The API will expose structured historical data through both REST and GraphQL interfaces, allowing flexible querying and retrieval of entities such as dynasties, rulers, events, wars, timelines, and their relationships. Access to the API will be secured through an API key-based authentication system, enabling usage tracking, rate limiting, and abuse prevention while remaining free and open to the public. The REST API will support standard HTTP-based resource retrieval with filtering, sorting, and query parameters for structured access. The GraphQL API will enable more flexible and efficient data retrieval, allowing developers to query nested relationships between entities in a single request. This dual-interface approach ensures compatibility with a wide range of application architectures and developer preferences. The system will include comprehensive API documentation, interactive request examples, authentication guidance, and response schema references to facilitate ease of integration. Developers will be able to register for API keys, manage usage, and review documentation through a dedicated developer portal section within the platform.
+
+From an infrastructure standpoint, the final deliverable will include a production-deployed backend service responsible for handling authentication, request validation, data access, and moderation workflows. The database layer will store normalized and relationally structured historical data to support both web rendering and API responses. The system will be optimized for read-heavy access patterns, given that the majority of usage will involve historical data retrieval rather than frequent updates.
+
+In summary, the final technical deliverables of Itihaas will include:
+
+- A public-facing web platform for structured exploration of Indian history.
+- An API-key based user authentication and contribution workflow with tracking and moderation controls.
+- A free, premium and commercial public API with API-key-based authentication.
+- Advanced REST and GraphQL interfaces for structured data access.
+- Comprehensive developer documentation and integration guidance.
+  A production-ready backend and database infrastructure optimized for reliability, performance, and scalability.
+
+Together, these deliverables establish Itihaas not only as a historical knowledge website but as a structured, developer-accessible historical data platform. The system is designed to serve both learners and builders, combining accessible public education with open technical integration capabilities.
 
 <!--
 Itihaas is a comprehensive application where users can view/read/learn and cite about Indian History. The application will cover all relevant events within the geographical extent of the Indian subcontinent and in the timeline between 7000 BCE (Mehrgarh Civilization, Indus Valley Civilization) and 1947 (Indian Independence). The entire process for the consequent fully functional application is divided into the following steps, in the written order.
