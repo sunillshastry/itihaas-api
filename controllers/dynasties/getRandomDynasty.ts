@@ -1,0 +1,88 @@
+// Global imports
+import dotenv from 'dotenv';
+import Dynasties from '@/models/Dynasties';
+import FailureLogs from '@/services/FailureLogs';
+import AppException from '@/services/AppException';
+import { Request, Response } from 'express';
+dotenv.config();
+
+/**
+ * Controller function to get a random dynasty
+ *
+ * @param {Object} request Default Express request object
+ * @param {Object} response Default Express response object
+ * @returns A response code with status code 200, 404 or 500 signifying success
+ *     or failure respectively
+ */
+async function getRandomDynasty(request: Request, response: Response) {
+  try {
+    // Use MongoDB aggregation to get one sized item
+    const [random] = await Dynasties.aggregate([{ $sample: { size: 1 } }]);
+
+    // Check if exists
+    if (!random) {
+      // Build app exception
+      const appException = new AppException(
+        'Failed to locate specified resource in database',
+        404,
+        'error',
+        false,
+        `${request.host}:${request.originalUrl}`,
+        request.method,
+        'controllers.dynasties.getRandomDynasty',
+      );
+
+      // Development mode response
+      if (process.env?.['NODE_ENV'] === 'development') {
+        return response.status(404).json({
+          success: false,
+          message: FailureLogs.entityNotFound(),
+          log: appException.log(),
+        });
+      }
+
+      // Default response
+      return response.status(404).json({
+        success: false,
+        message: FailureLogs.entityNotFound(),
+      });
+    }
+
+    // Return success response
+    return response.status(200).json({
+      success: true,
+      data: {
+        dynasty: random,
+      },
+    });
+  } catch (e) {
+    // Build app exception on server error
+    const appException = new AppException(
+      'Failed to fetch specified resource from the database',
+      500,
+      'fail',
+      false,
+      `${request.host}:${request.originalUrl}`,
+      request.method,
+      'controllers.dynasties.getRandomDynasty',
+    );
+
+    // Development mode response
+    if (process.env?.['NODE_ENV'] === 'development') {
+      return response.status(500).json({
+        success: false,
+        message: FailureLogs.databaseAccessFailure(),
+        errorLog: e,
+        log: appException.log(),
+      });
+    }
+
+    // Default response
+    return response.status(500).json({
+      success: false,
+      message: FailureLogs.databaseAccessFailure(),
+    });
+  }
+}
+
+export default getRandomDynasty;
