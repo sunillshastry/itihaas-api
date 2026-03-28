@@ -1,43 +1,48 @@
 // Global imports
-const dotenv = require('dotenv');
+import dotenv from 'dotenv';
+import FailureLogs from '@/services/FailureLogs';
+import AppException from '@/services/AppException';
+import checkValidQueryField from '@/utils/checkValidQueryField';
+import Dynasties from '@/models/Dynasties';
+import { Request, Response } from 'express';
 
 dotenv.config();
 
-// Local imports
-const Rulers = require('@/models/Rulers');
-const AppException = require('@/services/AppException');
-const FailureLogs = require('@/services/FailureLogs');
-const checkValidQueryField = require('@/utils/checkValidQueryField');
-
 /**
- * Controller function to get rulers by search
+ * Controller function to get dynasties by search
  *
  * @param {Object} request Default Express request object
  * @param {Object} response Default Express response object
- * @returns A response code with status code 200, 404 or 500 signifying success or failure respectively
+ * @returns A response code with status code 200, 404 or 500 signifying success
+ *     or failure respectively
  */
-async function getRulersBySearch(request, response) {
+async function getDynastiesBySearch(request: Request, response: Response) {
   const { search } = request.params;
-
   // Retrieve from request queries
   const { fields } = request.query;
 
   // Format all 'fields' values into an array
   const userRequestedFields =
-    (fields && fields.split(',').map((field) => field.trim().toLowerCase())) ||
+    (fields &&
+      (fields as string)
+        .split(',')
+        .map((field) => field.trim().toLowerCase())) ||
     [];
 
   // List of valid fields that the user can request
   const VALID_FIELD_ENTRIES = [
+    'area',
     'description',
-    'religion',
+    'languages',
+    'religions',
+    'currencies',
     'articles',
     'readings',
     'sources',
   ];
 
   let DEFAULT_REQUIRED_DB_FIELDS =
-    '_id slug name timeline description.oneline otherNames born died dynasty createdAt updatedAt';
+    '_id slug name timeline capitals population locations description.oneline otherNames updatedAt createdAt';
 
   userRequestedFields.forEach(function (field) {
     if (field === 'readings') {
@@ -50,22 +55,23 @@ async function getRulersBySearch(request, response) {
   });
 
   try {
-    // Use MongoDB find query to get all matches with 'name' or 'otherNames' properties
-    const rulers = await Rulers.find({
+    // Use MongoDB find query to get all matches with 'name' or 'otherNames'
+    // properties
+    const dynasties = await Dynasties.find({
       $or: [
         { name: { $regex: search, $options: 'i' } },
         { otherNames: { $elemMatch: { $regex: search, $options: 'i' } } },
-        { dynasty: { $regex: search, $options: 'i' } },
+        { locations: { $elemMatch: { $regex: search, $options: 'i' } } },
       ],
     }).select(DEFAULT_REQUIRED_DB_FIELDS);
 
     // Return success response
     return response.status(200).json({
       success: true,
-      size: rulers.length,
-      entity: 'ruler',
+      size: dynasties.length,
+      entity: 'dynasty',
       data: {
-        rulers,
+        dynasties,
       },
     });
   } catch (e) {
@@ -77,11 +83,11 @@ async function getRulersBySearch(request, response) {
       false,
       `${request.host}:${request.originalUrl}`,
       request.method,
-      'controllers.dynasties.getRulersBySearch',
+      'controllers.dynasties.getDynastiesBySearch',
     );
 
     // Development mode response
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env?.['NODE_ENV'] === 'development') {
       return response.status(500).json({
         success: false,
         message: FailureLogs.databaseAccessFailure(),
@@ -98,4 +104,4 @@ async function getRulersBySearch(request, response) {
   }
 }
 
-module.exports = getRulersBySearch;
+export default getDynastiesBySearch;

@@ -1,3 +1,5 @@
+import { Request, Response } from 'express';
+
 const packageJson = require('@/package.json');
 
 /**
@@ -6,7 +8,10 @@ const packageJson = require('@/package.json');
  * @param {object} response Default Express response object
  * @returns A info/status response with status code 200 providing app meta data/information
  */
-async function getApiInfo(request, response) {
+export default async function getApiInfo(
+  _request: Request,
+  response: Response,
+) {
   return response.status(200).json({
     app: 'itihaas-api',
     version: packageJson.version,
@@ -20,5 +25,3 @@ async function getApiInfo(request, response) {
     timestamp: new Date().toISOString(),
   });
 }
-
-module.exports = getApiInfo;

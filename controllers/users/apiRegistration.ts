@@ -1,10 +1,11 @@
 // const prisma = require('@/database/prisma');
-const prisma = require('@/database/prisma');
-const AppException = require('@/services/AppException');
-const FailureLogs = require('@/services/FailureLogs');
-const verifyTokenValidation = require('@/utils/verifyTokenValidation');
+import prisma from '@/database/prisma';
+import AppException from '@/services/AppException';
+import FailureLogs from '@/services/FailureLogs';
+import verifyTokenValidation from '@/utils/verifyTokenValidation';
+import { Request, Response } from 'express';
 
-async function apiRegistration(request, response) {
+async function apiRegistration(request: Request, response: Response) {
   try {
     // Get the verification token and validate its presence
     const { token } = request.body;
@@ -59,7 +60,7 @@ async function apiRegistration(request, response) {
     );
 
     // Failure response for 'development' mode
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env?.['NODE_ENV'] === 'development') {
       return response.status(500).json({
         success: false,
         errorLog: e,
@@ -75,4 +76,4 @@ async function apiRegistration(request, response) {
   }
 }
 
-module.exports = apiRegistration;
+export default apiRegistration;

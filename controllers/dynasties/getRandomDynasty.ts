@@ -1,24 +1,23 @@
 // Global imports
-const dotenv = require('dotenv');
-
+import dotenv from 'dotenv';
+import Dynasties from '@/models/Dynasties';
+import FailureLogs from '@/services/FailureLogs';
+import AppException from '@/services/AppException';
+import { Request, Response } from 'express';
 dotenv.config();
 
-// Local imports
-const Rulers = require('@/models/Rulers');
-const AppException = require('@/services/AppException');
-const FailureLogs = require('@/services/FailureLogs');
-
 /**
- * Controller function to get a random ruler
+ * Controller function to get a random dynasty
  *
  * @param {Object} request Default Express request object
  * @param {Object} response Default Express response object
- * @returns A response code with status code 200, 404 or 500 signifying success or failure respectively
+ * @returns A response code with status code 200, 404 or 500 signifying success
+ *     or failure respectively
  */
-async function getRandomRuler(request, response) {
+async function getRandomDynasty(request: Request, response: Response) {
   try {
     // Use MongoDB aggregation to get one sized item
-    const [random] = await Rulers.aggregate([{ $sample: { size: 1 } }]);
+    const [random] = await Dynasties.aggregate([{ $sample: { size: 1 } }]);
 
     // Check if exists
     if (!random) {
@@ -34,7 +33,7 @@ async function getRandomRuler(request, response) {
       );
 
       // Development mode response
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env?.['NODE_ENV'] === 'development') {
         return response.status(404).json({
           success: false,
           message: FailureLogs.entityNotFound(),
@@ -53,7 +52,7 @@ async function getRandomRuler(request, response) {
     return response.status(200).json({
       success: true,
       data: {
-        ruler: random,
+        dynasty: random,
       },
     });
   } catch (e) {
@@ -69,7 +68,7 @@ async function getRandomRuler(request, response) {
     );
 
     // Development mode response
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env?.['NODE_ENV'] === 'development') {
       return response.status(500).json({
         success: false,
         message: FailureLogs.databaseAccessFailure(),
@@ -86,4 +85,4 @@ async function getRandomRuler(request, response) {
   }
 }
 
-module.exports = getRandomRuler;
+export default getRandomDynasty;

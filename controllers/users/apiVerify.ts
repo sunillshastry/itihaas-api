@@ -1,11 +1,12 @@
-const prisma = require('@/database/prisma');
-const AppException = require('@/services/AppException');
-const FailureLogs = require('@/services/FailureLogs');
-const generateApiKey = require('@/utils/generateApiKey');
-const generateVerificationToken = require('@/utils/generateVerificationToken');
-const validator = require('validator');
+import prisma from '@/database/prisma';
+import AppException from '@/services/AppException';
+import FailureLogs from '@/services/FailureLogs';
+import generateApiKey from '@/utils/generateApiKey';
+import generateVerificationToken from '@/utils/generateVerificationToken';
+import { Request, Response } from 'express';
+import validator from 'validator';
 
-async function apiVerify(request, response) {
+async function apiVerify(request: Request, response: Response) {
   try {
     let { name, email } = request.body;
     const { usageReason, privacyAgreement, captcha } = request.body;
@@ -72,7 +73,7 @@ async function apiVerify(request, response) {
 
     // Build a verification link for the user to verify their account status
     let verificationLink;
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env?.['NODE_ENV'] === 'development') {
       verificationLink = `http://localhost:3000/verify/${verificationToken}`;
     } else {
       verificationLink = `https://itihaas.netlify.app/verify/${verificationToken}`;
@@ -105,7 +106,7 @@ async function apiVerify(request, response) {
     );
 
     // Failure response for 'development' mode
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env?.['NODE_ENV'] === 'development') {
       return response.status(500).json({
         success: false,
         errorLog: e,
@@ -121,4 +122,4 @@ async function apiVerify(request, response) {
   }
 }
 
-module.exports = apiVerify;
+export default apiVerify;

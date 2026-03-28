@@ -1,38 +1,38 @@
 // Global imports
-const dotenv = require('dotenv');
-
+import dotenv from 'dotenv';
+import Rulers from '@/models/Rulers';
+import AppException from '@/services/AppException';
+import FailureLogs from '@/services/FailureLogs';
+import { Request, Response } from 'express';
 dotenv.config();
 
-// Models
-const Dynasties = require('@/models/Dynasties');
-
-// Services
-const FailureLogs = require('@/services/FailureLogs');
-const AppException = require('@/services/AppException');
-
 /**
- * Controller function to get a list of dynasty names with specified 'id' or
- * 'slug' fields
+ * Controller function to get a list of ruler names with specified 'id' or 'slug' fields
  *
  * @param {Object} request Default Express request object
  * @param {Object} response Default Express response object
- * @returns A response code with status code 200, 404 or 500 signifying success
- *     or failure respectively
+ * @returns A response code with status code 200, 404 or 500 signifying success or failure respectively
  */
-async function getDynastyTitles(request, response) {
+async function getRulerTitles(request: Request, response: Response) {
   // Retrieve the only query
   const { include } = request.query;
 
   // Format query fields from the user
   const userRequestedFields =
     (include &&
-      include.split(',').map((field) => field.trim().toLowerCase())) ||
+      (include as string)
+        .split(',')
+        .map((field) => field.trim().toLowerCase())) ||
     [];
 
   // List of valid query entry fields
   const VALID_FIELD_ENTRIES = ['id', 'slug', 'type'];
 
-  const databaseProjection = { name: 1, _id: 0 };
+  const databaseProjection: {
+    name: string | number;
+    _id: string | number;
+    slug?: number | string;
+  } = { name: 1, _id: 0 };
   let isReturnTypeObject = false;
 
   // Check if query is included and validate them
@@ -50,10 +50,10 @@ async function getDynastyTitles(request, response) {
           false,
           `${request.host}:${request.originalUrl}`,
           request.method,
-          'controllers.dynasties.getDynastyTitles',
+          'controllers.rulers.getRulerTitles',
         );
 
-        if (process.env.NODE_ENV === 'development') {
+        if (process.env?.['NODE_ENV'] === 'development') {
           return response.status(404).json({
             success: false,
             message: FailureLogs.entityNotFound(),
@@ -81,21 +81,21 @@ async function getDynastyTitles(request, response) {
     }
 
     // Fetch data
-    const dynasties = await Dynasties.find({}, databaseProjection).lean();
+    const rulers = await Rulers.find({}, databaseProjection).lean();
     let result;
     if (isReturnTypeObject) {
       if (userRequestedFields.includes('type')) {
-        result = dynasties.map((dynasty) => ({
-          ...dynasty,
-          type: 'dynasty',
+        result = rulers.map((ruler) => ({
+          ...ruler,
+          type: 'ruler',
         }));
       } else {
-        result = dynasties.map((dynasty) => ({
-          ...dynasty,
+        result = rulers.map((ruler) => ({
+          ...ruler,
         }));
       }
     } else {
-      result = dynasties.map((dynasty) => dynasty.name);
+      result = rulers.map((ruler) => ruler.name);
     }
 
     // Return success response
@@ -103,7 +103,7 @@ async function getDynastyTitles(request, response) {
       success: true,
       size: result.length,
       data: {
-        dynasties: result,
+        rulers: result,
       },
     });
   } catch (e) {
@@ -114,10 +114,10 @@ async function getDynastyTitles(request, response) {
       false,
       `${request.host}:${request.originalUrl}`,
       request.method,
-      'controllers.dynasties.getDynastyBySlugName',
+      'controllers.rulers.getRulerBySlugName',
     );
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env?.['NODE_ENV'] === 'development') {
       return response.status(500).json({
         success: false,
         message: FailureLogs.databaseAccessFailure(),
@@ -133,4 +133,4 @@ async function getDynastyTitles(request, response) {
   }
 }
 
-module.exports = getDynastyTitles;
+export default getRulerTitles;

@@ -1,8 +1,9 @@
-const dotenv = require('dotenv');
+import dotenv from 'dotenv';
+import { Request, Response } from 'express';
 
 dotenv.config();
 
-async function getBaseRouteLinks(request, response) {
+async function getBaseRouteLinks(_request: Request, response: Response) {
   return response.status(200).json({
     web: 'https://itihaas.netlify.app/',
     docs: 'https://itihaas.netlify.app/docs',
@@ -13,4 +14,4 @@ async function getBaseRouteLinks(request, response) {
   });
 }
 
-module.exports = getBaseRouteLinks;
+export default getBaseRouteLinks;

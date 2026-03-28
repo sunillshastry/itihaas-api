@@ -1,16 +1,14 @@
 // Global imports
-const dotenv = require('dotenv');
-
+import dotenv from 'dotenv';
+import Dynasties from '@/models/Dynasties';
+import { Request, Response } from 'express';
 dotenv.config();
 
-// Models
-const Dynasties = require('@/models/Dynasties');
-
 // Services
-const FailureLogs = require('../../services/FailureLogs');
-const AppException = require('../../services/AppException');
-const checkValidQueryField = require('../../utils/checkValidQueryField');
-const convertStringToBoolean = require('../../utils/convertStringToBoolean');
+import FailureLogs from '@/services/FailureLogs';
+import AppException from '@/services/AppException';
+import checkValidQueryField from '@/utils/checkValidQueryField';
+import convertStringToBoolean from '@/utils/convertStringToBoolean';
 
 /**
  * Controller function to get all Dynasties for dynasties routes
@@ -20,7 +18,7 @@ const convertStringToBoolean = require('../../utils/convertStringToBoolean');
  * @returns A response with status code 200 or 500 signifying success or failure
  *     respectively
  */
-async function getAllDynasties(request, response) {
+async function getAllDynasties(request: Request, response: Response) {
   try {
     // Retrieve from request queries
     const { fields, wars, rulers } = request.query;
@@ -28,7 +26,9 @@ async function getAllDynasties(request, response) {
     // Format all 'fields' values into an array
     const userRequestedFields =
       (fields &&
-        fields.split(',').map((field) => field.trim().toLowerCase())) ||
+        (fields as string)
+          ?.split(',')
+          .map((field) => field.trim().toLowerCase())) ||
       [];
 
     // List of valid fields that the user can request
@@ -53,12 +53,12 @@ async function getAllDynasties(request, response) {
     });
 
     // Explicitly check for 'wars' in request.query
-    if (wars && convertStringToBoolean(wars)) {
+    if (wars && convertStringToBoolean(wars as string)) {
       DEFAULT_REQUIRED_DB_FIELDS += ' wars';
     }
 
     // Explicitly check for 'rulers' in request.query
-    if (rulers && convertStringToBoolean(rulers)) {
+    if (rulers && convertStringToBoolean(rulers as string)) {
       DEFAULT_REQUIRED_DB_FIELDS += ' rulers';
     }
 
@@ -87,7 +87,7 @@ async function getAllDynasties(request, response) {
       'controllers.dynasties.getAllDynasties',
     );
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env?.['NODE_ENV'] === 'development') {
       return response.status(500).json({
         success: false,
         message: FailureLogs.databaseAccessFailure(),
@@ -103,4 +103,4 @@ async function getAllDynasties(request, response) {
   }
 }
 
-module.exports = getAllDynasties;
+export default getAllDynasties;

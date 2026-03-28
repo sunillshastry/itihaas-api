@@ -1,14 +1,12 @@
 // Global imports
-const dotenv = require('dotenv');
+import dotenv from 'dotenv';
+import Dynasties from '@/models/Dynasties';
+import FailureLogs from '@/services/FailureLogs';
+import AppException from '@/services/AppException';
+import { Request, Response } from 'express';
 
 dotenv.config();
 
-// Models
-const Dynasties = require('@/models/Dynasties');
-
-// Services
-const FailureLogs = require('@/services/FailureLogs');
-const AppException = require('@/services/AppException');
 // const redisClient = require('@/cache/ioRedisConfig');
 
 /**
@@ -19,7 +17,7 @@ const AppException = require('@/services/AppException');
  * @returns A response with status code 200, 404 or 500 signifying success or
  *     failures respectively
  */
-async function getDynastiesById(request, response) {
+async function getDynastiesById(request: Request, response: Response) {
   const { id } = request.params;
   try {
     // WARNING: Removing/Commenting out the entire Redis cache check due to arising problems at the moment
@@ -55,7 +53,7 @@ async function getDynastiesById(request, response) {
         'controllers.dynasties.getDynastyById',
       );
 
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env?.['NODE_ENV'] === 'development') {
         return response.status(404).json({
           success: false,
           message: FailureLogs.entityNotFound(),
@@ -106,7 +104,7 @@ async function getDynastiesById(request, response) {
       'controllers.dynasties.getDynastyById',
     );
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env?.['NODE_ENV'] === 'development') {
       return response.status(500).json({
         success: false,
         message: FailureLogs.entityNotFound(),
@@ -122,4 +120,4 @@ async function getDynastiesById(request, response) {
   }
 }
 
-module.exports = getDynastiesById;
+export default getDynastiesById;

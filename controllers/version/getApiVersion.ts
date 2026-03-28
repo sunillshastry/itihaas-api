@@ -1,4 +1,5 @@
-const packageVersion = require('@/package.json');
+import packageVersion from '@/package.json';
+import { Request, Response } from 'express';
 
 /**
  * Get app version data of the Itihaas API
@@ -6,7 +7,10 @@ const packageVersion = require('@/package.json');
  * @param {object} response Default Express response object
  * @returns An API Version information response with status code 200
  */
-async function getApiVersion(request, response) {
+export default async function getApiVersion(
+  _request: Request,
+  response: Response,
+) {
   return response.status(200).json({
     app: 'itihaas-api',
     version: packageVersion.version,
@@ -14,5 +18,3 @@ async function getApiVersion(request, response) {
     client: 'https://itihaas.dev/',
   });
 }
-
-module.exports = getApiVersion;

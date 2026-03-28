@@ -1,12 +1,11 @@
 // Global imports
-const dotenv = require('dotenv');
+import dotenv from 'dotenv';
+import Rulers from '@/models/Rulers';
+import AppException from '@/services/AppException';
+import FailureLogs from '@/services/FailureLogs';
+import { Request, Response } from 'express';
 
 dotenv.config();
-
-// Local imports
-const Rulers = require('@/models/Rulers');
-const AppException = require('@/services/AppException');
-const FailureLogs = require('@/services/FailureLogs');
 
 /**
  * Get a list of all rulers
@@ -15,7 +14,7 @@ const FailureLogs = require('@/services/FailureLogs');
  * @param {Object} response Default response object for Express
  * @returns A response with status code 200 or 500, signifying success or failure respectively
  */
-async function getAllRulers(request, response) {
+async function getAllRulers(request: Request, response: Response) {
   try {
     const DEFAULT_REQUIRED_DB_FIELDS =
       '_id slug name timeline description.oneline otherNames born died dynasty createdAt updatedAt';
@@ -44,7 +43,7 @@ async function getAllRulers(request, response) {
     );
 
     // Failure response for 'development' mode
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env?.['NODE_ENV'] === 'development') {
       return response.status(500).json({
         success: false,
         errorLog: e,
@@ -60,4 +59,4 @@ async function getAllRulers(request, response) {
   }
 }
 
-module.exports = getAllRulers;
+export default getAllRulers;

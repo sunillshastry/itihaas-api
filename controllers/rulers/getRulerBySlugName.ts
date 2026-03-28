@@ -1,29 +1,27 @@
 // Global imports
-const dotenv = require('dotenv');
-
+import dotenv from 'dotenv';
+import Rulers from '@/models/Rulers';
+import AppException from '@/services/AppException';
+import FailureLogs from '@/services/FailureLogs';
+import { Request, Response } from 'express';
 dotenv.config();
 
-// Local imports
-const Rulers = require('@/models/Rulers');
-const AppException = require('@/services/AppException');
-const FailureLogs = require('@/services/FailureLogs');
-
 /**
- * Get a ruler by their ID parameter
+ * Get a ruler by their slug name
  *
- * @param {Object} request Default request object for Express
- * @param {Object} response Default response object for Express
- * @returns A response with 200, 404 or 500 status code signifying success or failures respectively
+ * @param {Object} request Default request object for express
+ * @param {Object} response Default response object for express
+ * @returns A response with status code 200, 404 or 500 signifying success or failures respectively
  */
-async function getRulerById(request, response) {
-  // Get the ID from the params
-  const { id } = request.params;
+async function getRulerBySlugName(request: Request, response: Response) {
+  // Retrieve the 'slug' parameter
+  const { slug } = request.params;
 
   try {
-    // Fetch the ruler from database
-    const ruler = await Rulers.findById(id);
+    // Query for the field from database
+    const ruler = await Rulers.findOne({ slug });
 
-    // If no ruler is found
+    // If the ruler does not exist, return 404 response
     if (!ruler) {
       const appException = new AppException(
         'Failed to locate specified resource in database',
@@ -32,11 +30,11 @@ async function getRulerById(request, response) {
         false,
         `${request.host}:${request.originalUrl}`,
         request.method,
-        'controllers.rulers.getRulerById',
+        'controllers.rulers.getRulerBySlugName',
       );
 
       // Response for development mode
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env?.['NODE_ENV'] === 'development') {
         return response.status(404).json({
           success: false,
           message: FailureLogs.entityNotFound(),
@@ -59,21 +57,20 @@ async function getRulerById(request, response) {
       },
     });
   } catch (e) {
-    // Server errors
     const appException = new AppException(
-      'Failed to retrieve specified ruler under the provided ID parameter',
+      'Failed to fetch specified resource from the database',
       500,
       'fail',
       false,
       `${request.host}:${request.originalUrl}`,
       request.method,
-      'controllers.rulers.getRulerById',
+      'controllers.dynasties.getRulerBySlugName',
     );
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env?.['NODE_ENV'] === 'development') {
       return response.status(500).json({
         success: false,
-        message: FailureLogs.entityNotFound(),
+        message: FailureLogs.databaseAccessFailure(),
         errorLog: e,
         log: appException.log(),
       });
@@ -86,4 +83,4 @@ async function getRulerById(request, response) {
   }
 }
 
-module.exports = getRulerById;
+export default getRulerBySlugName;
