@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "clean": "rm -rf dist",
     "dev": "npx prisma generate && ts-node-dev --respawn --transpile-only -r tsconfig-paths/register index.ts",
-    "build": "tsc && tsc-alias",
+    "build": "npm run clean && tsc && tsc-alias",
     "start": "npx prisma generate && node dist/index.js",
     "format": "prettier --write .",
     "format-check": "prettier --check .",
