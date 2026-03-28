@@ -7,19 +7,19 @@ import cors from 'cors';
 import helmet from 'helmet';
 dotenv.config();
 
-// Local imports
-const dynastiesRouter = require('@/routes/dynasties.routes');
-const rulersRouter = require('@/routes/rulers.routes');
-const healthCheckRouter = require('@/routes/healthcheck.routes');
-const versionRouter = require('@/routes/version.routes');
-const infoRouter = require('@/routes/info.routes');
-const baseRouter = require('@/routes/base.routes');
-const usersRouter = require('@/routes/users.routes');
+// Router imports
+import dynastiesRouter from '@/routes/dynasties';
+import rulersRouter from '@/routes/rulers';
+import healthCheckRouter from '@/routes/healthcheck';
+import versionRouter from '@/routes/version';
+import apiInfoRouter from '@/routes/info';
+import baseRouter from '@/routes/base';
+import usersRouter from '@/routes/users';
 
 const app = express();
 
 // Third-party middlewares
-if (process.env.NODE_ENV === 'development') {
+if (process.env?.['NODE_ENV'] === 'development') {
   app.use(morgan('dev'));
 }
 app.use(bodyParser.json());
@@ -35,6 +35,6 @@ app.use('/api/v1/users', usersRouter);
 
 app.use('/api/health', healthCheckRouter);
 app.use('/api/version', versionRouter);
-app.use('/api/info', infoRouter);
+app.use('/api/info', apiInfoRouter);
 
-module.exports = app;
+export default app;
