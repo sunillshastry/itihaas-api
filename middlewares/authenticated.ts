@@ -1,6 +1,11 @@
-const prisma = require('@/database/prisma');
+import prisma from '@/database/prisma';
+import { NextFunction, Request, Response } from 'express';
 
-async function authenticated(request, response, next) {
+export default async function authenticated(
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) {
   try {
     const apiKey = request.headers['x-api-key'];
 
@@ -46,5 +51,3 @@ async function authenticated(request, response, next) {
     });
   }
 }
-
-module.exports = authenticated;
