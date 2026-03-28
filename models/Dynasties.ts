@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
+import { Schema, model } from 'mongoose';
 
 // Primary Schema for Dynasty
-const DynastiesSchema = new mongoose.Schema(
+const DynastiesSchema = new Schema(
   {
     slug: {
       type: String,
@@ -165,6 +165,6 @@ const DynastiesSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-const DynastiesModel = mongoose.model('Dynasty', DynastiesSchema);
+const Dynasties = model('Dynasty', DynastiesSchema);
 
-module.exports = DynastiesModel;
+export default Dynasties;

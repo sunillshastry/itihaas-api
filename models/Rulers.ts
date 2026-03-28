@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import { Schema, model } from 'mongoose';
 
-const schema = new mongoose.Schema(
+const schema = new Schema(
   {
     slug: {
       type: String,
@@ -173,6 +173,6 @@ const schema = new mongoose.Schema(
   { timestamps: true },
 );
 
-const model = mongoose.model('Ruler', schema);
+const Rulers = model('Ruler', schema);
 
-module.exports = model;
+export default Rulers;
