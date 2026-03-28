@@ -1,11 +1,10 @@
 // Global imports
-const express = require('express');
-const morgan = require('morgan');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const helmet = require('helmet');
-const dotenv = require('dotenv');
-
+import dotenv from 'dotenv';
+import express from 'express';
+import morgan from 'morgan';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import helmet from 'helmet';
 dotenv.config();
 
 // Local imports
