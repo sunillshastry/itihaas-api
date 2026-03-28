@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js && npx prisma generate",
-    "dev": "ts-node-dev --respawn --transpile-only index.ts && npx prisma generate",
+    "dev": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register index.ts && npx prisma generate",
     "format": "prettier --write .",
     "format-check": "prettier --check .",
     "lint-check": "eslint .",
