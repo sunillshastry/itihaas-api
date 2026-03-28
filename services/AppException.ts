@@ -1,7 +1,14 @@
+type ExceptionType = 'fail' | 'error';
+
 /**
  * Custom App Error for logging during development
  */
 class AppException extends Error {
+  status: number;
+  type: ExceptionType;
+  success: boolean;
+  route: string;
+  method: string;
   /**
    * Creates an AppException instance with the provided information about the error
    * @extends Error
@@ -14,7 +21,15 @@ class AppException extends Error {
    * @param {string} method The HTTP method (GET,POST,PUT,DELETE) that created the error
    * @param {string} name Name of the controller method that resulted in the error
    */
-  constructor(message, status, type, success, route, method, name) {
+  constructor(
+    message: string,
+    status: number,
+    type: ExceptionType,
+    success: boolean,
+    route: string,
+    method: string,
+    name: string,
+  ) {
     super(message);
     this.status = status;
     this.type = type;
@@ -29,7 +44,7 @@ class AppException extends Error {
    *
    * @returns An error log consisting of helpful fields for debugging
    */
-  log() {
+  public log() {
     return {
       message: this.message,
       status: this.status,
@@ -42,4 +57,4 @@ class AppException extends Error {
   }
 }
 
-module.exports = AppException;
+export default AppException;

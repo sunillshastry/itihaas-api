@@ -5,7 +5,7 @@ const REGISTER_TEMPLATE = require('@/templates/register');
 dotenv.config();
 
 async function sendEmail() {
-  const RESEND_API_KEY = process.env.RESEND_EMAIL_API_KEY || null;
+  const RESEND_API_KEY = process.env?.['RESEND_EMAIL_API_KEY'] || null;
 
   if (!RESEND_API_KEY) {
     throw new Error('Error: Resend API key is missing or invalid');

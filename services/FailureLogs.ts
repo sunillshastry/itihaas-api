@@ -1,7 +1,7 @@
 /**
  * Class for consistent failure message logging for various controller functions
  */
-class FailureLogs {
+export default class FailureLogs {
   /**
    * Failure Log when database is unable to provide access to information in it
    * @returns A string consisting of the failure message
@@ -18,5 +18,3 @@ class FailureLogs {
     return 'Fail: Unable to find the entity under the specified identifier parameter';
   }
 }
-
-module.exports = FailureLogs;
