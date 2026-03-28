@@ -5,8 +5,9 @@
  * @param {String} field Field value to be checked
  * @returns A boolean indicating whether the provided field was part of the fields list
  */
-function checkValidQueryField(fieldsList, field) {
+export default function checkValidQueryField(
+  fieldsList: string[],
+  field: string,
+) {
   return fieldsList.includes(field);
 }
-
-module.exports = checkValidQueryField;

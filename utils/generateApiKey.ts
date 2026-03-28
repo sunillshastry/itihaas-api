@@ -1,4 +1,4 @@
-const crypto = require('crypto');
+import crypto from 'crypto';
 
 /**
  * Generate a hashed API key based on provided string length
@@ -6,8 +6,6 @@ const crypto = require('crypto');
  * @param {number} length The required length of the key string to be. Set to '50' by default
  * @returns A hexadecimal hashed API key string
  */
-function generateApiKey(length = 50) {
+export default function generateApiKey(length = 50) {
   return crypto.randomBytes(length).toString('hex');
 }
-
-module.exports = generateApiKey;

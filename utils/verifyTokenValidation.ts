@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
 /**
  * Validates if a provided web token is unexpired and returns its decoded payload data
@@ -6,18 +6,20 @@ const jwt = require('jsonwebtoken');
  * @param {string} token A valid and unexpired jsonwebtoken string
  * @returns The decoded payload content initially setup within the web token
  */
-async function verifyTokenValidation(token) {
+export default async function verifyTokenValidation(token: string) {
   try {
     // Retrieve the jsonwebtoken secret from ENV variables
     // If absent, use an invalid placeholder string
-    const JWT_SECRET = process.env.JWT_VERIFICATION_TOKEN_SECRET || '';
+    const JWT_SECRET = process.env?.['JWT_VERIFICATION_TOKEN_SECRET'] || '';
 
     const decoded = await jwt.verify(token, JWT_SECRET);
 
-    return decoded;
+    return decoded as {
+      id: string;
+      name: string;
+      email: string;
+    };
   } catch {
     return null;
   }
 }
-
-module.exports = verifyTokenValidation;
