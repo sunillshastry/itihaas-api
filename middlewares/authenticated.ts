@@ -22,7 +22,7 @@ export default async function authenticated(
     // Check if the API key is valid (exists in database)
     const user = await prisma.user.findUnique({
       where: {
-        api_key: apiKey,
+        api_key: apiKey as string,
       },
     });
 
