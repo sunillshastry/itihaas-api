@@ -1,14 +1,12 @@
 // Package imports
 // require('module-alias/register');
 import dotenv from 'dotenv';
+import createDatabaseConnection from './database/config';
+import app from './config/server';
 dotenv.config();
 
-// Local imports
-const createDatabaseConnection = require('@/database/config');
-const app = require('@/config/server');
-
 const HOST = process?.env?.['SERVER_HOST']! as string;
-const PORT = process?.env?.['SERVER_PORT']! as string;
+const PORT = parseInt(process?.env?.['SERVER_PORT']!) as number;
 
 if (HOST && PORT) {
   app.listen(PORT, HOST, function () {
