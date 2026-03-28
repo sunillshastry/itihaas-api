@@ -2,8 +2,8 @@
   "compilerOptions": {
     /* Core */
     "target": "ES2022",
-    "module": "CommonJS",
-    "moduleResolution": "node",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "rootDir": "./",
     "outDir": "./dist",
 
