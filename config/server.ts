@@ -15,6 +15,7 @@ import versionRouter from '@/routes/version';
 import apiInfoRouter from '@/routes/info';
 import baseRouter from '@/routes/base';
 import usersRouter from '@/routes/users';
+import warsRouter from '@/routes/wars';
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use('/', baseRouter);
 app.use('/api/v1/dynasties', dynastiesRouter);
 app.use('/api/v1/rulers', rulersRouter);
 app.use('/api/v1/users', usersRouter);
+app.use('/api/v1/wars', warsRouter);
 
 app.use('/api/health', healthCheckRouter);
 app.use('/api/version', versionRouter);
