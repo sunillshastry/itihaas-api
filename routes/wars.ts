@@ -3,6 +3,7 @@ import getRandomWar from '@/controllers/wars/getRandomWar';
 import getWarById from '@/controllers/wars/getWarById';
 import getWarBySlugName from '@/controllers/wars/getWarBySlugName';
 import getWarsBySearch from '@/controllers/wars/getWarsBySearch';
+import getWarTitles from '@/controllers/wars/getWarTitles';
 import { Router } from 'express';
 
 const warsRouter = Router();
@@ -10,6 +11,7 @@ const warsRouter = Router();
 // Routes
 // GET Routes
 warsRouter.get('/', getAllWars);
+warsRouter.get('/search/titles', getWarTitles);
 warsRouter.get('/random', getRandomWar);
 
 // GET routes (with params)
