@@ -46,7 +46,7 @@ export default async function getWarsBySearch(
     ];
 
     let DEFAULT_REQUIRED_DB_FIELDS =
-      '_id timeline outcome casualties description.oneline slug otherNames type belligerents locations updatedAt createdAt';
+      '_id name timeline outcome casualties description.oneline slug otherNames type belligerents locations updatedAt createdAt';
 
     // Validate each 'fields' entry to check if it exists on the schema
     userRequestedFields.forEach(function (field) {
