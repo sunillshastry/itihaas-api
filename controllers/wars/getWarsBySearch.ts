@@ -51,7 +51,7 @@ export default async function getWarsBySearch(
     // Validate each 'fields' entry to check if it exists on the schema
     userRequestedFields.forEach(function (field) {
       if (field === 'readings') {
-        DEFAULT_REQUIRED_DB_FIELDS += 'furtherReading';
+        DEFAULT_REQUIRED_DB_FIELDS += ' furtherReading';
       }
 
       if (checkValidQueryField(VALID_FIELD_ENTRIES, field)) {
