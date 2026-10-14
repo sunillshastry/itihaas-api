@@ -137,3 +137,6 @@ dist
 .pnp.*
 
 /generated/prisma
+
+# Vitest reports and artifacts
+.vitest/
