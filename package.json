@@ -18,7 +18,14 @@
     "db:studio": "prisma studio",
     "db:migrate": "prisma migrate",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:unit": "vitest run tests/unit",
+    "test:models": "vitest run tests/models",
+    "test:integration": "vitest run tests/integration",
+    "test:security": "vitest run tests/security",
+    "test:e2e": "vitest run tests/e2e",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
