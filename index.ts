@@ -5,17 +5,22 @@ import createDatabaseConnection from './database/config';
 import app from './config/server';
 dotenv.config();
 
-const HOST = process?.env?.['SERVER_HOST']! as string;
-const PORT = parseInt(process?.env?.['SERVER_PORT']!) as number;
+async function startServer() {
+  const HOST = process?.env?.['SERVER_HOST']! as string;
+  const PORT = parseInt(process?.env?.['SERVER_PORT']!) as number;
 
-if (HOST && PORT) {
+  if (!HOST || !Number.isInteger(PORT) || PORT < 1 || PORT > 65535) {
+    throw new Error('Invalid SERVER_HOST or SERVER_PORT configuration');
+  }
+
+  await createDatabaseConnection();
+
   app.listen(PORT, HOST, function () {
     console.log(`Server currently running on http://${HOST}:${PORT}/`);
-    createDatabaseConnection();
   });
-} else {
-  console.log(
-    'Failed to start server as server host and/or server port are not defined',
-  );
-  process.exit(1);
 }
+
+startServer().catch(function (error: unknown) {
+  console.error('Failed to start the server:', error);
+  process.exitCode = 1;
+});
