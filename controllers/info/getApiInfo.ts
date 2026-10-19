@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
-
-const packageJson = require('@/package.json');
+import packageJson from '@/package.json';
 
 /**
  * Get meta information of the Itihaas API
