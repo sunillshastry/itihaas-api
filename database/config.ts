@@ -1,35 +1,25 @@
-import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 
 dotenv.config();
 
 /**
  * Create a connection to the database for backend interactions
  */
-export default async function createDatabaseConnection() {
-  try {
-    if (process.env?.['MONGO_DB_CONNECTION_STRING']) {
-      // Checking for a successful connection and display message on development mode only
-      const connection = await mongoose.connect(
-        process.env?.['MONGO_DB_CONNECTION_STRING'],
-      );
-      if (connection && process.env?.['NODE_ENV'] === 'development') {
-        console.log(
-          `Successfully established connection to database: ${connection.connection.host}`,
-        );
-      }
-    } else {
-      console.log(
-        'Server unable to establish connection to database due to absence of database connection string',
-      );
-    }
-  } catch (e) {
-    // Display failure message on development mode only
-    console.log(
-      'Failed to create connection to database due to an internal server error',
-    );
-    if (process.env?.['NODE_ENV'] === 'development') {
-      console.log(`Error Log: ${e}`);
-    }
+export default async function createDatabaseConnection(
+  uri = process?.env?.['MONGO_DB_CONNECTION_STRING'],
+) {
+  if (!uri) {
+    throw new Error('MONGO_DB_CONNECTION_STRING is not correctly configured');
   }
+
+  const connection = await mongoose.connect(uri);
+
+  if (process?.env?.['NODE_ENV'] === 'development') {
+    console.log(
+      `Successfully connected to the database: ${connection.connection.host}`,
+    );
+  }
+
+  return connection;
 }
