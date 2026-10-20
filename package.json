@@ -9,14 +9,23 @@
     "build": "npm run clean && tsc && tsc-alias",
     "start": "npx prisma generate && node dist/index.js",
     "format": "prettier --write .",
-    "format-check": "prettier --check .",
-    "lint-check": "eslint .",
+    "format:check": "prettier --check .",
+    "lint:check": "eslint .",
     "lint": "eslint --fix .",
     "prepare": "husky",
     "stage": "lint-staged",
     "db:generate": "prisma generate",
     "db:studio": "prisma studio",
-    "db:migrate": "prisma migrate"
+    "db:migrate": "prisma migrate",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:unit": "vitest run tests/unit",
+    "test:models": "vitest run tests/models",
+    "test:integration": "vitest run tests/integration",
+    "test:security": "vitest run tests/security",
+    "test:e2e": "vitest run tests/e2e",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
@@ -55,7 +64,9 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/morgan": "^1.9.10",
     "@types/node": "^25.5.0",
+    "@types/supertest": "^7.2.1",
     "@types/validator": "^13.15.10",
+    "@vitest/coverage-v8": "^5.0.5",
     "eslint": "^8.57.1",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^10.1.1",
@@ -64,10 +75,13 @@
     "eslint-plugin-prettier": "^5.2.5",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.2",
+    "mongodb-memory-server": "^11.3.0",
     "prettier": "^3.5.3",
     "prisma": "^6.14.0",
+    "supertest": "^7.3.1",
     "ts-node-dev": "^2.0.0",
     "tsc-alias": "^1.8.16",
-    "typescript": "^6.0.2"
+    "typescript": "^6.0.2",
+    "vitest": "^5.0.4"
   }
 }

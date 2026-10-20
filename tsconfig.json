@@ -46,6 +46,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "vitest.config.ts"],
   "exclude": ["node_modules", "dist"]
 }

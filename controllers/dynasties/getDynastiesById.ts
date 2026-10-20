@@ -4,6 +4,7 @@ import Dynasties from '@/models/Dynasties';
 import FailureLogs from '@/services/FailureLogs';
 import AppException from '@/services/AppException';
 import { Request, Response } from 'express';
+import mongoose from 'mongoose';
 
 dotenv.config();
 
@@ -19,6 +20,14 @@ dotenv.config();
  */
 async function getDynastiesById(request: Request, response: Response) {
   const { id } = request.params;
+
+  if (!mongoose.isValidObjectId(id)) {
+    return response.status(400).json({
+      success: false,
+      message: 'Invalid dynasty ID',
+    });
+  }
+
   try {
     // WARNING: Removing/Commenting out the entire Redis cache check due to arising problems at the moment
     // Check for any cache from the caching system
