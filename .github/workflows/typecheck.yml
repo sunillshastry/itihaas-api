@@ -1,10 +1,6 @@
 name: typecheck
 
 on:
-  push:
-    branches:
-      - beta
-      - master
   pull_request:
     branches:
       - master
