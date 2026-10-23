@@ -44,6 +44,18 @@ export default async function apiKeyRegistration(
       });
     }
 
+    // Check if the provided email is already previously registered
+    const doesUserExistByEmail = await Users.find({
+      email: email?.toLowerCase(),
+    });
+    if (doesUserExistByEmail) {
+      return response.status(400).json({
+        success: false,
+        message:
+          'The provided email is already registered and in use. Please use the recovery option to access',
+      });
+    }
+
     // Validate the captcha specifically
     // TODO: Validate the captcha to ensure it is the correct captcha code
 
