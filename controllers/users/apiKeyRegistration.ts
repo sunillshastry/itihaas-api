@@ -6,6 +6,14 @@ import generateVerificationToken from '@/utils/generateVerificationToken';
 import { Request, Response } from 'express';
 import validator from 'validator';
 
+interface RequestBody {
+  name: string;
+  email: string;
+  usageReason: string;
+  privacyAgreement: boolean;
+  captcha: string;
+}
+
 /**
  * Controller function for implementing the API Registration for a new user
  *
@@ -19,7 +27,7 @@ export default async function apiKeyRegistration(
 ) {
   try {
     // Retrieve all the available attributes from the body
-    const { name, email, usageReason, privacyAgreement, captcha } =
+    const { name, email, usageReason, privacyAgreement, captcha }: RequestBody =
       request.body;
 
     // Basic validation to ensure the attributes are in the right format
