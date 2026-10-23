@@ -112,13 +112,13 @@ export default async function apiKeyRegistration(
   } catch (e) {
     // Custom app error log
     const appException = new AppException(
-      'Failed to verify user details',
+      'Failed to perform user and API key registration',
       500,
       'fail',
       false,
       `${request.host}:${request.originalUrl}`,
       request.method,
-      'controllers.users.apiVerify',
+      'controllers.users.apiKeyRegistration',
     );
 
     // Failure response for 'development' mode

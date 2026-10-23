@@ -78,13 +78,13 @@ export default async function apiKeyEmailResend(
   } catch (e) {
     // Custom app error log
     const appException = new AppException(
-      'Failed to perform API resend',
+      'Failed to perform API key email resend',
       500,
       'fail',
       false,
       `${request.host}:${request.originalUrl}`,
       request.method,
-      'controllers.users.apiResend',
+      'controllers.users.apiKeyResend',
     );
 
     // Failure response for 'development' mode

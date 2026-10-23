@@ -48,13 +48,13 @@ export default async function apiKeyVerification(
   } catch (e) {
     // Custom app error log
     const appException = new AppException(
-      'Failed to fetch all rulers from database',
+      'Failed to perform API key verification',
       500,
       'fail',
       false,
       `${request.host}:${request.originalUrl}`,
       request.method,
-      'controllers.rulers.getAllRulers',
+      'controllers.users.apiKeyVerification',
     );
 
     // Failure response for 'development' mode
