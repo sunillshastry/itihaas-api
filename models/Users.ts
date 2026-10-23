@@ -26,7 +26,7 @@ const UsersSchema = new Schema(
     captcha: {
       type: String,
       required: [true, 'Captcha value is a required field'],
-      unique: true,
+      unique: false,
     },
     apiKey: {
       type: String,
