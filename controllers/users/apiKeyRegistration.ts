@@ -53,10 +53,11 @@ export default async function apiKeyRegistration(
     }
 
     // Check if the provided email is already previously registered
-    const doesUserExistByEmail = await Users.find({
+    const doesUserExistByEmail = await Users.findOne({
       email: email?.toLowerCase(),
     });
-    if (doesUserExistByEmail) {
+
+    if (doesUserExistByEmail !== null) {
       return response.status(400).json({
         success: false,
         message:
