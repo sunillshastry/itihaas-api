@@ -1,0 +1,105 @@
+import Users from '@/models/Users';
+import AppException from '@/services/AppException';
+import FailureLogs from '@/services/FailureLogs';
+import generateVerificationToken from '@/utils/generateVerificationToken';
+import { Request, Response } from 'express';
+import validator from 'validator';
+
+interface RequestBody {
+  email: string;
+}
+
+/**
+ * Controller function for the users route to handle the API key resend service
+ *
+ * @param request Default request object from Express
+ * @param response Default Response object from Express
+ * @returns A corresponding success/failure response (200/400/500) based on the incoming request
+ */
+export default async function apiKeyEmailResend(
+  request: Request,
+  response: Response,
+) {
+  try {
+    const { email }: RequestBody = request.body;
+
+    // Validate if the email is present + is of the right format
+    if (!email || !validator.isEmail(email)) {
+      return response.status(400).json({
+        success: false,
+        message: 'Please provide a valid email address',
+      });
+    }
+
+    // Check if the user exists in the database with the provided email address (user must already be registered)
+    const user = await Users.findOne({ email: email?.toLowerCase() });
+
+    if (user === null) {
+      return response.status(403).json({
+        success: false,
+        message:
+          'Provided email address is not registered with us. Please register for an API key',
+      });
+    }
+
+    // Check if the user was previously verified already
+    if (user?.verified) {
+      return response.status(400).json({
+        success: false,
+        message:
+          "Provided email address is already verified. Use the 'recover' service to recover your API key",
+      });
+    }
+
+    // Create a new verification token for the user to verify
+    const verificationToken = generateVerificationToken({
+      id: user?._id?.toString(),
+      name: user?.name,
+      email: user?.email,
+    });
+
+    // Build the verification link
+    let verificationLink;
+    if (process.env?.['NODE_ENV'] === 'development') {
+      verificationLink = `http://localhost:3000/verify/${verificationToken}`;
+    } else {
+      verificationLink = `https://itihaas.netlify.app/verify/${verificationToken}`;
+    }
+
+    // TODO: Implement feature to send email to user with the API key
+    // Send email with API key to the user
+
+    return response.status(200).json({
+      success: true,
+      token: verificationToken,
+      link: verificationLink,
+      expiration: '15 minutes',
+    });
+  } catch (e) {
+    // Custom app error log
+    const appException = new AppException(
+      'Failed to perform API resend',
+      500,
+      'fail',
+      false,
+      `${request.host}:${request.originalUrl}`,
+      request.method,
+      'controllers.users.apiResend',
+    );
+
+    // Failure response for 'development' mode
+    if (process.env?.['NODE_ENV'] === 'development') {
+      return response.status(500).json({
+        success: false,
+        errorLog: e,
+        log: appException.log(),
+      });
+    }
+
+    // Default failure response
+    return response.status(500).json({
+      success: false,
+      message: FailureLogs.databaseAccessFailure(),
+    });
+  }
+}
