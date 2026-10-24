@@ -1,14 +1,20 @@
-// const prisma = require('@/database/prisma');
-import prisma from '@/database/prisma';
+import Users from '@/models/Users';
 import AppException from '@/services/AppException';
 import FailureLogs from '@/services/FailureLogs';
 import verifyTokenValidation from '@/utils/verifyTokenValidation';
 import { Request, Response } from 'express';
 
-async function apiRegistration(request: Request, response: Response) {
+interface RequestBody {
+  token: string;
+}
+
+export default async function apiKeyVerification(
+  request: Request,
+  response: Response,
+) {
   try {
-    // Get the verification token and validate its presence
-    const { token } = request.body;
+    const { token }: RequestBody = request.body;
+
     if (!token) {
       return response.status(400).json({
         success: false,
@@ -16,47 +22,39 @@ async function apiRegistration(request: Request, response: Response) {
       });
     }
 
-    // Check if the token is still valid
+    // Check if the provided token is still valid (not expired)
     const decoded = await verifyTokenValidation(token);
-    if (decoded === null || !decoded.id) {
+    if (decoded === null || !decoded?.id) {
       return response.status(401).json({
         success: false,
         expired: true,
-        message: `Provided token has expired. Please use the 'resend' service for a new verification link`,
+        message: `Provided token has expired. Please use the API Resend service for new verification link`,
       });
     }
 
-    // Update the user's 'verified' status to true
-    const user = await prisma.user.update({
-      where: {
-        id: decoded?.id,
-      },
-      data: {
-        verified: true,
-      },
-    });
+    // If the provided token value is correct and valid (not expired), then update the 'verified' status to true
+    const user = await Users.findByIdAndUpdate(decoded?.id, { verified: true });
 
-    // Retrieve the apiKey field from the user's entity
-    const apiKey = user.api_key;
+    // On successful verification, retrieve the user's ID attribute and send it securely via email
+    const apiKey = user?.apiKey;
 
-    // TODO: Implement functionality/logic to send emails to user
-    // Send email to the user with the apiKey present in it
+    // TODO: Implement the functionality to send the user's API key via email
 
     return response.status(200).json({
       success: true,
-      message: 'Successfully verified user registration',
+      message: 'Successfully verified user account and API key',
       apiKey,
     });
   } catch (e) {
     // Custom app error log
     const appException = new AppException(
-      'Failed to fetch all rulers from database',
+      'Failed to perform API key verification',
       500,
       'fail',
       false,
       `${request.host}:${request.originalUrl}`,
       request.method,
-      'controllers.rulers.getAllRulers',
+      'controllers.users.apiKeyVerification',
     );
 
     // Failure response for 'development' mode
@@ -75,5 +73,3 @@ async function apiRegistration(request: Request, response: Response) {
     });
   }
 }
-
-export default apiRegistration;

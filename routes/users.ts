@@ -1,14 +1,14 @@
+import apiKeyEmailResend from '@/controllers/users/apiKeyEmailResend';
+import apiKeyRecovery from '@/controllers/users/apiKeyRecovery';
+import apiKeyRegistration from '@/controllers/users/apiKeyRegistration';
+import apiKeyVerification from '@/controllers/users/apiKeyVerification';
 import express from 'express';
-import apiRecovery from '@/controllers/users/apiRecovery';
-import apiRegistration from '@/controllers/users/apiRegistration';
-import apiResend from '@/controllers/users/apiResend';
-import apiVerify from '@/controllers/users/apiVerify';
 
 const usersRouter = express.Router({ strict: false });
 
-usersRouter.post('/verify', apiVerify);
-usersRouter.post('/register', apiRegistration);
-usersRouter.post('/recover', apiRecovery);
-usersRouter.post('/resend', apiResend);
+usersRouter.post('/register', apiKeyRegistration);
+usersRouter.post('/verify', apiKeyVerification);
+usersRouter.post('/resend', apiKeyEmailResend);
+usersRouter.post('/recover', apiKeyRecovery);
 
 export default usersRouter;

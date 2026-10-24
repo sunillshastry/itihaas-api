@@ -1,54 +1,64 @@
-import prisma from '@/database/prisma';
+import Users from '@/models/Users';
 import AppException from '@/services/AppException';
 import FailureLogs from '@/services/FailureLogs';
 import generateVerificationToken from '@/utils/generateVerificationToken';
 import { Request, Response } from 'express';
 import validator from 'validator';
 
-async function apiResend(request: Request, response: Response) {
-  try {
-    const { email } = request.body;
+interface RequestBody {
+  email: string;
+}
 
-    // Check if the email is absent or of incorrect format
+/**
+ * Controller function for the users route to handle the API key resend service
+ *
+ * @param request Default request object from Express
+ * @param response Default Response object from Express
+ * @returns A corresponding success/failure response (200/400/500) based on the incoming request
+ */
+export default async function apiKeyEmailResend(
+  request: Request,
+  response: Response,
+) {
+  try {
+    const { email }: RequestBody = request.body;
+
+    // Validate if the email is present + is of the right format
     if (!email || !validator.isEmail(email)) {
       return response.status(400).json({
         success: false,
-        message: 'Please ensure a valid email is provided',
+        message: 'Please provide a valid email address',
       });
     }
 
-    // See if a user exists in the database under the provided email address
-    const user = await prisma.user.findUnique({
-      where: {
-        email: email?.toLowerCase(),
-      },
-    });
+    // Check if the user exists in the database with the provided email address (user must already be registered)
+    const user = await Users.findOne({ email: email?.toLowerCase() });
 
-    // If no user is present
-    if (!user) {
+    if (user === null) {
       return response.status(403).json({
         success: false,
-        message: 'Provided email is not registered. Please register first',
+        message:
+          'Provided email address is not registered with us. Please register for an API key',
       });
     }
 
-    // If the user is already verified ('verified' = true)
+    // Check if the user was previously verified already
     if (user?.verified) {
       return response.status(400).json({
         success: false,
-        message: `Provided email is already verified. Use the 'recovery' service to recover back your API key`,
+        message:
+          "Provided email address is already verified. Use the 'recover' service to recover your API key",
       });
     }
 
-    // If all validations are checked:
-    // Create a verification token for the user to verify themselves
+    // Create a new verification token for the user to verify
     const verificationToken = generateVerificationToken({
-      id: user.id,
-      name: user.name,
-      email: user.email,
+      id: user?._id?.toString(),
+      name: user?.name,
+      email: user?.email,
     });
 
-    // Build a verification link for the user to verify their account status
+    // Build the verification link
     let verificationLink;
     if (process.env?.['NODE_ENV'] === 'development') {
       verificationLink = `http://localhost:3000/verify/${verificationToken}`;
@@ -68,13 +78,13 @@ async function apiResend(request: Request, response: Response) {
   } catch (e) {
     // Custom app error log
     const appException = new AppException(
-      'Failed to perform API resend',
+      'Failed to perform API key email resend',
       500,
       'fail',
       false,
       `${request.host}:${request.originalUrl}`,
       request.method,
-      'controllers.users.apiResend',
+      'controllers.users.apiKeyResend',
     );
 
     // Failure response for 'development' mode
@@ -93,5 +103,3 @@ async function apiResend(request: Request, response: Response) {
     });
   }
 }
-
-export default apiResend;
