@@ -52,7 +52,7 @@ export default async function apiKeyRecovery(
     }
 
     // On passing all validations, retrieve the API key from the email's document and send a new email to the user
-    // TODO: Use Resend to send an email with the API key to the user
+    // Using the sendEmail service to asynchronously mail using BullMQ and Redis
     await sendEmail({
       type: 'api-key-recovery',
       to: user?.email,

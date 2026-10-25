@@ -67,8 +67,8 @@ export default async function apiKeyEmailResend(
       verificationLink = `https://itihaas.netlify.app/verify/${verificationToken}`;
     }
 
-    // TODO: Implement feature to send email to user with the API key
     // Send email with API key to the user
+    // Using the sendEmail service to asynchronously mail using BullMQ and Redis
     await sendEmail({
       type: 'verification-resend',
       to: user?.email,

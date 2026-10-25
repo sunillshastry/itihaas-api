@@ -39,7 +39,7 @@ export default async function apiKeyVerification(
     // On successful verification, retrieve the user's ID attribute and send it securely via email
     const apiKey = user?.apiKey;
 
-    // TODO: Implement the functionality to send the user's API key via email
+    // Using the sendEmail service to asynchronously mail using BullMQ and Redis
     if (!user?.verified) {
       await sendEmail({
         type: 'verification-success',
