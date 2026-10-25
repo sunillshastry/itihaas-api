@@ -22,7 +22,8 @@
     "test:security": "vitest run tests/security",
     "test:e2e": "vitest run tests/e2e",
     "test:coverage": "vitest run --coverage",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "worker": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register email/worker.ts"
   },
   "repository": {
     "type": "git",
