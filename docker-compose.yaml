@@ -1,14 +1,55 @@
-version: '3.9'
+x-app: &app
+  build:
+    context: .
+    dockerfile: Dockerfile
+  image: itihaas-api
+  env_file: .env
+  environment:
+    REDIS_URL: redis://redis:6379 # container-to-container: use the service name, not localhost
+    SMTP_HOST: mailpit
+  volumes:
+    - .:/app
+    - /app/node_modules
+  depends_on:
+    redis:
+      condition: service_healthy
 
 services:
   server:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: itihaas-api
+    <<: *app
     ports:
       - '8000:8000'
-    volumes:
-      - .:/app
-      - /app/node_modules
     command: ['npm', 'run', 'dev']
+
+  worker:
+    <<: *app
+    command: ['npm', 'run', 'worker']
+
+  redis:
+    image: redis:7-alpine
+    command:
+      [
+        'redis-server',
+        '--appendonly',
+        'yes',
+        '--maxmemory-policy',
+        'noeviction',
+      ]
+    ports:
+      - '127.0.0.1:6379:6379' # host-only, handy for redis-cli / Redis Insight
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - '127.0.0.1:8025:8025' # web inbox
+      - '127.0.0.1:1025:1025' # SMTP
+
+volumes:
+  redis-data:
