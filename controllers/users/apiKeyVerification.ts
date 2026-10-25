@@ -1,3 +1,4 @@
+import { sendEmail } from '@/email';
 import Users from '@/models/Users';
 import AppException from '@/services/AppException';
 import FailureLogs from '@/services/FailureLogs';
@@ -39,6 +40,14 @@ export default async function apiKeyVerification(
     const apiKey = user?.apiKey;
 
     // TODO: Implement the functionality to send the user's API key via email
+    if (!user?.verified) {
+      await sendEmail({
+        type: 'verification-success',
+        to: user?.email as string,
+        name: user?.name as string,
+        userId: user?._id.toString() as string,
+      });
+    }
 
     return response.status(200).json({
       success: true,

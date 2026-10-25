@@ -1,3 +1,4 @@
+import { sendEmail } from '@/email';
 import Users from '@/models/Users';
 import AppException from '@/services/AppException';
 import FailureLogs from '@/services/FailureLogs';
@@ -68,6 +69,13 @@ export default async function apiKeyEmailResend(
 
     // TODO: Implement feature to send email to user with the API key
     // Send email with API key to the user
+    await sendEmail({
+      type: 'verification-resend',
+      to: user?.email,
+      name: user?.name,
+      link: verificationLink,
+      expiresIn: '15 minutes',
+    });
 
     return response.status(200).json({
       success: true,

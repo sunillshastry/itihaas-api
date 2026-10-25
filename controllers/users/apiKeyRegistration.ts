@@ -1,3 +1,4 @@
+import { sendEmail } from '@/email';
 import Users from '@/models/Users';
 import AppException from '@/services/AppException';
 import FailureLogs from '@/services/FailureLogs';
@@ -74,7 +75,7 @@ export default async function apiKeyRegistration(
     const verified = false;
 
     const user = await Users.create({
-      name: name.toLowerCase(),
+      name,
       email,
       verified,
       usageReason: usageReason ?? '',
@@ -97,6 +98,13 @@ export default async function apiKeyRegistration(
     }
 
     // TODO: Implement the feature to send the email to the user with the verification link
+    await sendEmail({
+      type: 'registration',
+      to: user?.email,
+      name: user?.name,
+      link: verificationLink,
+      expiresIn: '15 minutes',
+    });
 
     return response.status(201).json({
       success: true,
