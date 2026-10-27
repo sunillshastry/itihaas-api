@@ -22,7 +22,8 @@
     "test:security": "vitest run tests/security",
     "test:e2e": "vitest run tests/e2e",
     "test:coverage": "vitest run --coverage",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "worker": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register email/worker.ts"
   },
   "repository": {
     "type": "git",
@@ -40,9 +41,11 @@
   "homepage": "https://github.com/sunillshastry/itihaas-api#readme",
   "dependencies": {
     "body-parser": "^2.2.0",
+    "bullmq": "^6.4.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "express-rate-limit": "^8.7.1",
     "helmet": "^8.1.0",
     "ioredis": "^5.6.1",
     "jsonwebtoken": "^9.0.2",
@@ -52,7 +55,7 @@
     "nodemon": "^3.1.9",
     "resend": "^6.0.1",
     "tsconfig-paths": "^4.2.0",
-    "validator": "^13.15.15"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
@@ -60,8 +63,8 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/morgan": "^1.9.10",
     "@types/node": "^25.5.0",
+    "@types/nodemailer": "^8.0.2",
     "@types/supertest": "^7.2.1",
-    "@types/validator": "^13.15.10",
     "@vitest/coverage-v8": "^5.0.5",
     "eslint": "^8.57.1",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -72,6 +75,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.1.2",
     "mongodb-memory-server": "^11.3.0",
+    "nodemailer": "^10.2.1",
     "prettier": "^3.5.3",
     "supertest": "^7.3.1",
     "ts-node-dev": "^2.0.0",

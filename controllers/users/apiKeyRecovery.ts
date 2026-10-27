@@ -1,12 +1,13 @@
+import { sendEmail } from '@/email';
 import Users from '@/models/Users';
 import AppException from '@/services/AppException';
 import FailureLogs from '@/services/FailureLogs';
 import { Request, Response } from 'express';
-import validator from 'validator';
+import z from 'zod';
 
-interface RequestBody {
-  email: string;
-}
+const ValidationSchema = z.object({
+  email: z.email(),
+});
 
 /**
  * Controller function for the users route to handle the API key recovery service
@@ -20,15 +21,24 @@ export default async function apiKeyRecovery(
   response: Response,
 ) {
   try {
-    const { email }: RequestBody = request.body;
+    const requestBody: z.infer<typeof ValidationSchema> = request.body;
 
-    // Check if the email attribute is provided and validate it
-    if (!email || !validator.isEmail(email)) {
+    // Perform the required validation for the request body - ensuring proper verification
+    const validated = ValidationSchema.safeParse(requestBody);
+
+    if (!validated.success) {
       return response.status(400).json({
         success: false,
-        message: 'Please provide a valid email address',
+        message: 'Error: Request validation failed or missing attributes',
+        errors: validated.error.issues.map((issue) => ({
+          field: issue?.path.join(''),
+          message: issue?.message,
+        })),
       });
     }
+
+    // On successful validation and verification, proceed ahead with the validated data
+    const { email } = validated.data;
 
     // Ensure the provided email exists (registered previously)
     const user = await Users.findOne({ email: email?.toLowerCase() });
@@ -51,11 +61,17 @@ export default async function apiKeyRecovery(
     }
 
     // On passing all validations, retrieve the API key from the email's document and send a new email to the user
-    // TODO: Use Resend to send an email with the API key to the user
+    // Using the sendEmail service to asynchronously mail using BullMQ and Redis
+    await sendEmail({
+      type: 'api-key-recovery',
+      to: user?.email,
+      name: user?.name,
+      userId: user?._id.toString(),
+    });
 
     return response.status(200).json({
       success: true,
-      apiKey: user?.apiKey,
+      message: 'Success: Please check your email',
     });
   } catch (e) {
     // Custom app error log
