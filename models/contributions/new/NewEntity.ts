@@ -1,4 +1,5 @@
-import { model, Schema } from 'mongoose';
+import { getContributionsConnection } from '@/database/config';
+import { Schema } from 'mongoose';
 
 const NewEntitySchema = new Schema(
   {
@@ -32,6 +33,7 @@ const NewEntitySchema = new Schema(
   { timestamps: true },
 );
 
-const NewEntity = model('new-entity-contribution', NewEntitySchema);
+const contributionsDb = getContributionsConnection();
+const NewEntity = contributionsDb.model('new-entity', NewEntitySchema);
 
 export default NewEntity;
