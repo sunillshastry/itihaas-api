@@ -4,11 +4,11 @@ import AppException from '@/services/AppException';
 import FailureLogs from '@/services/FailureLogs';
 import generateVerificationToken from '@/utils/generateVerificationToken';
 import { Request, Response } from 'express';
-import validator from 'validator';
+import z from 'zod';
 
-interface RequestBody {
-  email: string;
-}
+const ValidationSchema = z.object({
+  email: z.email(),
+});
 
 /**
  * Controller function for the users route to handle the API key resend service
@@ -22,15 +22,24 @@ export default async function apiKeyEmailResend(
   response: Response,
 ) {
   try {
-    const { email }: RequestBody = request.body;
+    const requestBody: z.infer<typeof ValidationSchema> = request.body;
 
-    // Validate if the email is present + is of the right format
-    if (!email || !validator.isEmail(email)) {
+    // Perform the required validation for the request body - ensuring proper verification
+    const validated = ValidationSchema.safeParse(requestBody);
+
+    if (!validated.success) {
       return response.status(400).json({
         success: false,
-        message: 'Please provide a valid email address',
+        message: 'Error: Request validation failed or missing attributes',
+        errors: validated.error.issues.map((issue) => ({
+          field: issue?.path.join(''),
+          message: issue?.message,
+        })),
       });
     }
+
+    // On successful validation and verification, proceed ahead with the validated data
+    const { email } = validated.data;
 
     // Check if the user exists in the database with the provided email address (user must already be registered)
     const user = await Users.findOne({ email: email?.toLowerCase() });

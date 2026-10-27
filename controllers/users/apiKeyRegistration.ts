@@ -5,15 +5,17 @@ import FailureLogs from '@/services/FailureLogs';
 import generateApiKey from '@/utils/generateApiKey';
 import generateVerificationToken from '@/utils/generateVerificationToken';
 import { Request, Response } from 'express';
-import validator from 'validator';
+import z from 'zod';
 
-interface RequestBody {
-  name: string;
-  email: string;
-  usageReason: string;
-  privacyAgreement: boolean;
-  captcha: string;
-}
+const ValidationSchema = z.object({
+  name: z.string().min(2),
+  email: z.email(),
+  usageReason: z.string().max(255).optional().default(''),
+  privacyAgreement: z.literal(true),
+
+  // TODO: Update the "captcha" type to ensure its not a generic string value but an actual captcha code
+  captcha: z.string(),
+});
 
 /**
  * Controller function for implementing the API Registration for a new user
@@ -28,30 +30,25 @@ export default async function apiKeyRegistration(
 ) {
   try {
     // Retrieve all the available attributes from the body
-    const { name, email, usageReason, privacyAgreement, captcha }: RequestBody =
-      request.body;
+    const requestBody: z.infer<typeof ValidationSchema> = request.body;
 
-    // Basic validation to ensure the attributes are in the right format
-    if (!name) {
+    // Perform the required validation for the request body - ensuring proper verification
+    const validated = ValidationSchema.safeParse(requestBody);
+
+    if (!validated.success) {
       return response.status(400).json({
         success: false,
-        message: 'Name is a required field',
+        message: 'Error: Request validation failed or missing attributes',
+        errors: validated?.error?.issues.map((issue) => ({
+          field: issue?.path?.join(''),
+          message: issue?.message,
+        })),
       });
     }
 
-    if (!privacyAgreement || privacyAgreement !== true || !captcha) {
-      return response.status(400).json({
-        success: false,
-        message: 'Missing or incorrect fields: privacyAgreement, captcha',
-      });
-    }
-
-    if (!email || !validator.isEmail(email)) {
-      return response.status(400).json({
-        success: false,
-        message: 'Email is a required field and must be a valid address',
-      });
-    }
+    // On successful validation and verification, proceed ahead with the validated data
+    const { name, email, usageReason, privacyAgreement, captcha } =
+      validated.data;
 
     // Check if the provided email is already previously registered
     const doesUserExistByEmail = await Users.findOne({
@@ -78,7 +75,7 @@ export default async function apiKeyRegistration(
       name,
       email,
       verified,
-      usageReason: usageReason ?? '',
+      usageReason,
       privacyAgreement,
       captcha,
       apiKey,
