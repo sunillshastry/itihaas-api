@@ -54,9 +54,6 @@ export default async function apiKeyVerification(
     // If the provided token value is correct and valid (not expired), then update the 'verified' status to true
     const user = await Users.findByIdAndUpdate(decoded?.id, { verified: true });
 
-    // On successful verification, retrieve the user's ID attribute and send it securely via email
-    const apiKey = user?.apiKey;
-
     // Using the sendEmail service to asynchronously mail using BullMQ and Redis
     if (!user?.verified) {
       await sendEmail({
