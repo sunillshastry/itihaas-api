@@ -124,10 +124,9 @@ export default async function apiKeyRegistration(
       data: {
         name: user?.name,
         email: user?.email,
-        id: user?._id,
       },
-      token: verificationToken,
-      link: verificationLink,
+      message:
+        'Success: Please check your email and verify your code within 15 minutes',
       expiration: '15 minutes',
     });
   } catch (e) {

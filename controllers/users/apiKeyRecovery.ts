@@ -71,7 +71,7 @@ export default async function apiKeyRecovery(
 
     return response.status(200).json({
       success: true,
-      apiKey: user?.apiKey,
+      message: 'Success: Please check your email',
     });
   } catch (e) {
     // Custom app error log

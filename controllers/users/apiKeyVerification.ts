@@ -69,8 +69,8 @@ export default async function apiKeyVerification(
 
     return response.status(200).json({
       success: true,
-      message: 'Successfully verified user account and API key',
-      apiKey,
+      message:
+        'Success: API key was verified! Please check your email to access the key.',
     });
   } catch (e) {
     // Custom app error log

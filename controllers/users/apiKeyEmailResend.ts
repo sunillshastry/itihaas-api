@@ -88,8 +88,6 @@ export default async function apiKeyEmailResend(
 
     return response.status(200).json({
       success: true,
-      token: verificationToken,
-      link: verificationLink,
       expiration: '15 minutes',
     });
   } catch (e) {
