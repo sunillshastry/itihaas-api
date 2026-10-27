@@ -1,4 +1,5 @@
-import { model, Schema } from 'mongoose';
+import { getUsersConnection } from '@/database/config';
+import { Schema } from 'mongoose';
 
 const UsersSchema = new Schema(
   {
@@ -40,6 +41,7 @@ const UsersSchema = new Schema(
   { timestamps: true },
 );
 
-const Users = model('User', UsersSchema);
+const usersDb = getUsersConnection();
 
+const Users = usersDb.model('User', UsersSchema);
 export default Users;
