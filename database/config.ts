@@ -4,6 +4,7 @@ import mongoose, { Connection } from 'mongoose';
 dotenv.config();
 
 let contributionsConnection: Connection;
+let usersConnection: Connection;
 
 /**
  * Create a connection to the database for backend interactions
@@ -26,11 +27,17 @@ export default async function createDatabaseConnection(
     useCache: true,
   });
 
+  const usersDb = process?.env?.['MONGO_DB_USERS_DATABASE'] || 'users';
+  usersConnection = mongoose.connection.useDb(usersDb, {
+    useCache: true,
+  });
+
   if (process?.env?.['NODE_ENV'] === 'development') {
     console.log(
-      `Successfully connected to the base database: ${baseDb} (${connection.connection.host})`,
+      `Successfully connected to the base database: ${baseDb}; (${connection.connection.host})`,
     );
     console.log(`Contributions database configured: ${contributionsDb}`);
+    console.log(`Users database configured: ${usersDb}`);
   }
 
   return connection;
@@ -50,4 +57,19 @@ export function getContributionsConnection(): Connection {
   }
 
   return contributionsConnection;
+}
+
+/**
+ * Getter for the users database connection
+ */
+export function getUsersConnection(): Connection {
+  if (!usersConnection) {
+    const usersDb = process?.env?.['MONGO_DB_USERS_DATABASE'] || 'users';
+
+    usersConnection = mongoose.connection.useDb(usersDb, {
+      useCache: true,
+    });
+  }
+
+  return usersConnection;
 }
