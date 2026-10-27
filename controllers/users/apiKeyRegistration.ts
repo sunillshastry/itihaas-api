@@ -1,6 +1,7 @@
 import { sendEmail } from '@/email';
 import Users from '@/models/Users';
 import AppException from '@/services/AppException';
+import verifyCaptcha from '@/services/captchaVerification';
 import FailureLogs from '@/services/FailureLogs';
 import generateApiKey from '@/utils/generateApiKey';
 import generateVerificationToken from '@/utils/generateVerificationToken';
@@ -12,9 +13,7 @@ const ValidationSchema = z.object({
   email: z.email(),
   usageReason: z.string().max(255).optional().default(''),
   privacyAgreement: z.literal(true),
-
-  // TODO: Update the "captcha" type to ensure its not a generic string value but an actual captcha code
-  captcha: z.string(),
+  captcha: z.string().min(1),
 });
 
 /**
@@ -63,9 +62,26 @@ export default async function apiKeyRegistration(
       });
     }
 
-    // Validate the captcha specifically
-    // TODO: Validate the captcha to ensure it is the correct captcha code
+    // Validate the provided reCAPTCHA code with Google using the verifyCaptcha service implemented
+    let captchaValid: boolean;
 
+    try {
+      captchaValid = await verifyCaptcha(captcha);
+    } catch {
+      return response.status(503).json({
+        success: false,
+        message: 'Google reCAPTCHA verification is temporarily unavailable',
+      });
+    }
+
+    if (!captchaValid) {
+      return response.status(403).json({
+        success: false,
+        message: 'Error: Google reCAPTCHA verification failed',
+      });
+    }
+
+    // On all successful verifications and checks, proceed further with registration persistence
     const apiKey = generateApiKey();
 
     // Set the 'verified' attribute to false by default for a new user
