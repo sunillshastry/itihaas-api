@@ -3,6 +3,8 @@ import { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import FailureLogs from '@/services/FailureLogs';
 import Wars from '@/models/Wars';
+import mongoose from 'mongoose';
+import { cacheAside } from '@/cache/redis';
 dotenv.config();
 
 /**
@@ -17,8 +19,17 @@ export default async function getWarById(request: Request, response: Response) {
     // Retrieve the specified and unique ID parameter from the request URL source
     const { id } = request.params;
 
-    // Fetch the desired entity from the database querying with the provided ID value
-    const war = await Wars.findById(id);
+    if (!mongoose.isValidObjectId(id)) {
+      return response.status(400).json({
+        success: false,
+        message: 'Invalid dynasty ID',
+      });
+    }
+
+    // Try to retrieve the requested entity from the cache, on a cache miss - provide the default fetch from the database
+    const war = await cacheAside('wars', `id:${id}`, 3600, () =>
+      Wars.findById(id).lean(),
+    );
 
     // In the event that the requested resource is not found or unavailable
     if (!war) {

@@ -3,7 +3,19 @@ import dotenv from 'dotenv';
 import AppException from '@/services/AppException';
 import FailureLogs from '@/services/FailureLogs';
 import Wars from '@/models/Wars';
+import z from 'zod';
+import { cacheAside } from '@/cache/redis';
 dotenv.config();
+
+const validFieldEntries = ['id', 'slug', 'type'] as const;
+
+const RequestQueryValidation = z.object({
+  include: z
+    .string()
+    .transform((value) => value.split(','))
+    .pipe(z.array(z.enum(validFieldEntries)))
+    .optional(),
+});
 
 /**
  * Controller function to get a list of war names with specified 'id' or
@@ -19,19 +31,23 @@ export default async function getWarTitles(
   response: Response,
 ) {
   try {
-    // Retrieve the only query allowed on this request endpoint
-    const { include } = request.query;
+    // Retrieve the 'include' query and ensure it is prompt validated
 
-    // Format query fields from the user
-    const userRequestedFields =
-      (include &&
-        (include as string)
-          .split(',')
-          .map((field) => field.trim().toLowerCase())) ||
-      [];
+    const validatedRequestQuery = RequestQueryValidation.safeParse(
+      request?.query,
+    );
 
-    // List of valid query fields
-    const VALID_FIELD_ENTRIES = ['id', 'slug', 'type'];
+    if (!validatedRequestQuery?.success) {
+      return response.status(400).json({
+        success: false,
+        errors: validatedRequestQuery.error.issues.map((issue) => ({
+          field: issue?.path.join(''),
+          message: issue?.message,
+        })),
+      });
+    }
+
+    const { include } = validatedRequestQuery.data;
 
     const databaseProjection: {
       name: number;
@@ -45,8 +61,8 @@ export default async function getWarTitles(
 
     // Check if query is included and validate them
     if (include) {
-      const prohibitedFields = userRequestedFields.filter(
-        (field) => !VALID_FIELD_ENTRIES.includes(field),
+      const prohibitedFields = include?.filter(
+        (field) => !validFieldEntries.includes(field),
       );
 
       if (prohibitedFields?.length > 0) {
@@ -76,21 +92,25 @@ export default async function getWarTitles(
 
       isReturnTypeObject = true;
       // Update _id field in projection
-      if (userRequestedFields.includes('id')) {
+      if (include.includes('id')) {
         // eslint-disable-next-line no-underscore-dangle
         databaseProjection._id = 1;
       }
 
       // Update slug field in projection
-      if (userRequestedFields.includes('slug')) {
+      if (include.includes('slug')) {
         databaseProjection.slug = 1;
       }
     }
 
-    const wars = await Wars.find({}, databaseProjection).lean();
+    const cacheKey = `titles:${include?.join(':')}`;
+    const wars = await cacheAside('wars', cacheKey, 3600, () =>
+      Wars.find({}, databaseProjection).lean(),
+    );
+
     let result;
     if (isReturnTypeObject) {
-      if (userRequestedFields.includes('type')) {
+      if (include?.includes('type')) {
         result = wars.map((war) => ({
           ...war,
           type: 'war',
