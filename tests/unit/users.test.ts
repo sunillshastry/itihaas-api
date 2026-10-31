@@ -22,7 +22,10 @@ function mockResponse() {
   const res: Partial<Response> = {};
   res.status = vi.fn().mockReturnValue(res);
   res.json = vi.fn().mockReturnValue(res);
-  return res as Response & { status: ReturnType<typeof vi.fn>; json: ReturnType<typeof vi.fn> };
+  return res as Response & {
+    status: ReturnType<typeof vi.fn>;
+    json: ReturnType<typeof vi.fn>;
+  };
 }
 
 describe('Users unit tests', () => {
@@ -364,7 +367,9 @@ describe('Users unit tests', () => {
         verified: false,
       });
 
-      const req = { body: { email: 'unverified-recover@example.com' } } as Request;
+      const req = {
+        body: { email: 'unverified-recover@example.com' },
+      } as Request;
       const res = mockResponse();
 
       await apiKeyRecovery(req, res);
@@ -388,7 +393,9 @@ describe('Users unit tests', () => {
         verified: true,
       });
 
-      const req = { body: { email: 'verified-recover@example.com' } } as Request;
+      const req = {
+        body: { email: 'verified-recover@example.com' },
+      } as Request;
       const res = mockResponse();
 
       await apiKeyRecovery(req, res);
