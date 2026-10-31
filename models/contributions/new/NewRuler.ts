@@ -83,8 +83,8 @@ const NewRulerSchema = new Schema(
     },
     sources: {
       type: String,
-      required: false,
-      default: null,
+      required: [true, 'Sources is a required field'],
+      unique: false,
     },
     furtherReading: {
       type: String,
