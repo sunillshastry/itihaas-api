@@ -4,9 +4,8 @@ import Dynasties from '@/models/Dynasties';
 import FailureLogs from '@/services/FailureLogs';
 import AppException from '@/services/AppException';
 import { Request, Response } from 'express';
+import { cacheAside } from '@/cache/redis';
 dotenv.config();
-
-// const redisClient = require('@/cache/ioRedisConfig');
 
 /**
  * Controller function to get a dynasty by its slug name for dynasties route
@@ -19,46 +18,20 @@ dotenv.config();
 async function getDynastyBySlugName(request: Request, response: Response) {
   const { slug } = request.params;
   try {
-    // WARNING: Removing/Commenting out the entire Redis cache check due to arising problems at the moment
-    // TODO: Implement a better caching strategy with Redis and refactor or update this code segment in time.
-    // Check for cached 'slug' key data
-    // const cacheKeyId = `dynasty:slug:${slug}`;
-
-    // If cached slug key exists
-    // WARNING: Removing/Commenting out the entire Redis cache check due to arising problems at the moment
-    // if (cacheKeyId) {
-    //   // Get cached dynasty data via the 'id' property
-    //   const idKey = `dynasty:${cacheKeyId}`;
-    //   const cacheData = await redisClient.get(idKey);
-
-    //   // If any cached dynasty data exists from the 'id' property
-    //   if (cacheData) {
-    //     return response.status(200).json({
-    //       success: true,
-    //       data: {
-    //         dynasty: JSON.parse(cacheData),
-    //       },
-    //     });
-    //   }
-    // }
-
-    // No cache hits:
-    // Get dynasty from database via its slug
-    const dynasty = await Dynasties.findOne({ slug });
+    // Try to retrieve the requested entity from the cache, on a cache miss - provide the default fetch from the database
+    const dynasty = await cacheAside('dynasties', `slug:${slug}`, 3600, () =>
+      Dynasties.findOne({ slug }).lean(),
+    );
 
     // Check if dynasty does not exist - return 404
     if (!dynasty) {
-      // Delete cache key
-      // WARNING: Removing/Commenting out the entire Redis cache check due to arising problems at the moment
-      // await redisClient.del(cacheKeyId);
-
       // Build AppException
       const appException = new AppException(
         'Failed to locate specified resource in database',
         404,
         'error',
         false,
-        `${request.host}:${request.originalUrl}`,
+        `${request.hostname}:${request.originalUrl}`,
         request.method,
         'controllers.dynasties.getDynastyBySlugName',
       );
@@ -78,27 +51,6 @@ async function getDynastyBySlugName(request: Request, response: Response) {
       });
     }
 
-    // Set retrieved data from database to cache system
-    // First: Set actual dynasty content via dynasty._id value key
-    // eslint-disable-next-line no-underscore-dangle
-    // WARNING: Removing/Commenting out the entire Redis cache check due to arising problems at the moment
-    // const idKey = `dynasty:${dynasty._id}`;
-    // await redisClient.set(
-    //   idKey,
-    //   JSON.stringify(dynasty),
-    //   'EX',
-    //   process.env.UPSTASH_REDIS_TTL_DURATION,
-    // );
-
-    // // Second: Set dynasty._id value via dynasty:slug key
-    // await redisClient.set(
-    //   cacheKeyId,
-    //   // eslint-disable-next-line no-underscore-dangle
-    //   dynasty._id.toString(),
-    //   'EX',
-    //   process.env.UPSTASH_REDIS_TTL_DURATION,
-    // );
-
     // Return success response
     return response.status(200).json({
       success: true,
@@ -112,7 +64,7 @@ async function getDynastyBySlugName(request: Request, response: Response) {
       500,
       'fail',
       false,
-      `${request.host}:${request.originalUrl}`,
+      `${request.hostname}:${request.originalUrl}`,
       request.method,
       'controllers.dynasties.getDynastyBySlugName',
     );

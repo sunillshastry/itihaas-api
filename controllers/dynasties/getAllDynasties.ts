@@ -7,8 +7,28 @@ dotenv.config();
 // Services
 import FailureLogs from '@/services/FailureLogs';
 import AppException from '@/services/AppException';
-import checkValidQueryField from '@/utils/checkValidQueryField';
 import convertStringToBoolean from '@/utils/convertStringToBoolean';
+import z from 'zod';
+import { cacheAside } from '@/cache/redis';
+
+const validFieldOptions = [
+  'area',
+  'description',
+  'languages',
+  'religions',
+  'currencies',
+  'articles',
+] as const;
+
+const RequestQueryValidation = z.object({
+  fields: z
+    .string()
+    .transform((value) => value.split(','))
+    .pipe(z.array(z.enum(validFieldOptions)))
+    .optional(),
+  wars: z.enum(['true', 'false']).optional(),
+  rulers: z.enum(['true', 'false']).optional(),
+});
 
 /**
  * Controller function to get all Dynasties for dynasties routes
@@ -20,35 +40,33 @@ import convertStringToBoolean from '@/utils/convertStringToBoolean';
  */
 async function getAllDynasties(request: Request, response: Response) {
   try {
-    // Retrieve from request queries
-    const { fields, wars, rulers } = request.query;
+    // Retrieve attributes from request queries and validate them
+    const validatedRequestQuery = RequestQueryValidation.safeParse(
+      request.query,
+    );
 
-    // Format all 'fields' values into an array
-    const userRequestedFields =
-      (fields &&
-        (fields as string)
-          ?.split(',')
-          .map((field) => field.trim().toLowerCase())) ||
-      [];
+    if (!validatedRequestQuery.success) {
+      return response.status(400).json({
+        success: true,
+        errors: validatedRequestQuery?.error?.issues.map((issue) => ({
+          field: issue?.path?.join(''),
+          message: issue?.message,
+        })),
+      });
+    }
 
-    // List of valid fields that the user can request
-    const VALID_FIELD_ENTRIES = [
-      'area',
-      'description',
-      'languages',
-      'religions',
-      'currencies',
-      'articles',
-    ];
+    const { fields, rulers, wars } = validatedRequestQuery.data;
 
     // Required fields from database (Default base fields)
     let DEFAULT_REQUIRED_DB_FIELDS =
       '_id slug name timeline capitals population locations description.oneline otherNames createdAt updatedAt';
 
     // Append any additional user requested fields
-    userRequestedFields.forEach(function (field) {
-      if (checkValidQueryField(VALID_FIELD_ENTRIES, field)) {
-        DEFAULT_REQUIRED_DB_FIELDS += ` ${field === 'description' ? 'description.long' : field}`;
+    fields?.forEach(function (field) {
+      if (field === 'description') {
+        DEFAULT_REQUIRED_DB_FIELDS += ` description.long`;
+      } else {
+        DEFAULT_REQUIRED_DB_FIELDS += ` ${field}`;
       }
     });
 
@@ -62,9 +80,11 @@ async function getAllDynasties(request: Request, response: Response) {
       DEFAULT_REQUIRED_DB_FIELDS += ' rulers';
     }
 
-    // Retrieve specific fields from database
-    const dynasties = await Dynasties.find({}).select(
-      DEFAULT_REQUIRED_DB_FIELDS,
+    // Set up the cache key based on the requested fields and query parameters
+    const cacheKey = `all:${fields?.join(':')}${rulers === 'true' && ':rulers'}${wars === 'true' && ':wars'}`;
+
+    const dynasties = await cacheAside('dynasties', cacheKey, 3600, () =>
+      Dynasties.find().select(DEFAULT_REQUIRED_DB_FIELDS).lean(),
     );
 
     // Response with successful response
