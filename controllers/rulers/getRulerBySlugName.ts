@@ -4,6 +4,7 @@ import Rulers from '@/models/Rulers';
 import AppException from '@/services/AppException';
 import FailureLogs from '@/services/FailureLogs';
 import { Request, Response } from 'express';
+import { cacheAside } from '@/cache/redis';
 dotenv.config();
 
 /**
@@ -18,8 +19,10 @@ async function getRulerBySlugName(request: Request, response: Response) {
   const { slug } = request.params;
 
   try {
-    // Query for the field from database
-    const ruler = await Rulers.findOne({ slug });
+    // Query for the field from cache + database
+    const ruler = await cacheAside('rulers', `slug:${slug}`, 3600, () =>
+      Rulers.findOne({ slug }).lean(),
+    );
 
     // If the ruler does not exist, return 404 response
     if (!ruler) {

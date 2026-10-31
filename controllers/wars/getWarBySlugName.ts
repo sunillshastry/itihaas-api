@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import FailureLogs from '@/services/FailureLogs';
 import Wars from '@/models/Wars';
+import { cacheAside } from '@/cache/redis';
 dotenv.config();
 
 /**
@@ -20,8 +21,10 @@ export default async function getWarBySlugName(
     // Retrieve the slug name parameter from the request
     const { slug } = request.params;
 
-    // Fetch the actual entity from the database using the provided parameter
-    const war = await Wars.findOne({ slug });
+    // Try to retrieve the requested entity from the cache, on a cache miss - provide the default fetch from the database
+    const war = await cacheAside('wars', `slug:${slug}`, 3600, () =>
+      Wars.findOne({ slug }).lean(),
+    );
 
     // In the event that the requested resource is not found or unavailable
     if (!war) {
