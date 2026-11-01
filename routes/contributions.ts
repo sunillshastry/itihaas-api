@@ -1,5 +1,6 @@
 import apiDocsContribution from '@/controllers/contributions/api/apiDocsContribution';
 import editEntityContribution from '@/controllers/contributions/edit/editEntityContribution';
+import generalContributionController from '@/controllers/contributions/general/generalContributionController';
 import newDynastyContribution from '@/controllers/contributions/new/newDynastyContribution';
 import newEntityContribution from '@/controllers/contributions/new/newEntityContribution';
 import newRulerContribution from '@/controllers/contributions/new/newRulerContribution';
@@ -19,5 +20,8 @@ contributionsRouter.post('/edit', editEntityContribution);
 
 // API & Docs contributions endpoints
 contributionsRouter.post('/api', apiDocsContribution);
+
+// General contributions endpoints
+contributionsRouter.post('/general', generalContributionController);
 
 export default contributionsRouter;
