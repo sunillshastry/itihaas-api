@@ -1,3 +1,4 @@
+import apiDocsContribution from '@/controllers/contributions/api/apiDocsContribution';
 import editEntityContribution from '@/controllers/contributions/edit/editEntityContribution';
 import newDynastyContribution from '@/controllers/contributions/new/newDynastyContribution';
 import newEntityContribution from '@/controllers/contributions/new/newEntityContribution';
@@ -15,5 +16,8 @@ contributionsRouter.post('/new/war', newWarContribution);
 
 // Edit contributions endpoints
 contributionsRouter.post('/edit', editEntityContribution);
+
+// API & Docs contributions endpoints
+contributionsRouter.post('/api', apiDocsContribution);
 
 export default contributionsRouter;
