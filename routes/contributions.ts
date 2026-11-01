@@ -1,3 +1,4 @@
+import editEntityContribution from '@/controllers/contributions/edit/editEntityContribution';
 import newDynastyContribution from '@/controllers/contributions/new/newDynastyContribution';
 import newEntityContribution from '@/controllers/contributions/new/newEntityContribution';
 import newRulerContribution from '@/controllers/contributions/new/newRulerContribution';
@@ -11,5 +12,8 @@ contributionsRouter.post('/new/entity', newEntityContribution);
 contributionsRouter.post('/new/dynasty', newDynastyContribution);
 contributionsRouter.post('/new/ruler', newRulerContribution);
 contributionsRouter.post('/new/war', newWarContribution);
+
+// Edit contributions endpoints
+contributionsRouter.post('/edit', editEntityContribution);
 
 export default contributionsRouter;
