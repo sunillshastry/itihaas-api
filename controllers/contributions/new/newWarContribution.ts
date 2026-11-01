@@ -30,7 +30,7 @@ const ValidationSchema = z.object({
 });
 
 /**
- * Controller function to create a contribution record for new ruler
+ * Controller function to create a contribution record for new war
  *
  * @param request Default request object from Express
  * @param response Default response object from Express
