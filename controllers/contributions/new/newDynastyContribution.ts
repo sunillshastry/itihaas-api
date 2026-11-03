@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import NewDynasty from '@/models/contributions/new/NewDynasty';
 import AppException from '@/services/AppException';
 import FailureLogs from '@/services/FailureLogs';
+
 dotenv.config();
 
 const ValidationSchema = z.object({

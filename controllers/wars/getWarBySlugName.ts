@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import FailureLogs from '@/services/FailureLogs';
 import Wars from '@/models/Wars';
 import { cacheAside } from '@/cache/redis';
+
 dotenv.config();
 
 /**

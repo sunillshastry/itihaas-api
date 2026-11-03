@@ -5,6 +5,7 @@ import { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import z from 'zod';
 import { cacheAside } from '@/cache/redis';
+
 dotenv.config();
 
 // Configure and implement the schema setup for request.params and request.query

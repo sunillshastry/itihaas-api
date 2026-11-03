@@ -5,6 +5,7 @@ import FailureLogs from '@/services/FailureLogs';
 import AppException from '@/services/AppException';
 import { Request, Response } from 'express';
 import { cacheAside } from '@/cache/redis';
+
 dotenv.config();
 
 /**

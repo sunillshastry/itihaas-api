@@ -53,7 +53,7 @@ async function getAllRulers(request: Request, response: Response) {
       });
     }
 
-    const { fields, wars } = validatedRequestQuery?.data;
+    const { fields, wars } = validatedRequestQuery.data;
 
     let DEFAULT_REQUIRED_DB_FIELDS =
       '_id slug name timeline description.oneline otherNames born died dynasty createdAt updatedAt';

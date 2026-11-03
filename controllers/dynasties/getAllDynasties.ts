@@ -2,6 +2,7 @@
 import dotenv from 'dotenv';
 import Dynasties from '@/models/Dynasties';
 import { Request, Response } from 'express';
+
 dotenv.config();
 
 // Services

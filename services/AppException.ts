@@ -5,10 +5,15 @@ type ExceptionType = 'fail' | 'error';
  */
 class AppException extends Error {
   status: number;
+
   type: ExceptionType;
+
   success: boolean;
+
   route: string;
+
   method: string;
+
   /**
    * Creates an AppException instance with the provided information about the error
    * @extends Error

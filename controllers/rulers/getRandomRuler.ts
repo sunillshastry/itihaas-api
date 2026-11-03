@@ -4,6 +4,7 @@ import Rulers from '@/models/Rulers';
 import AppException from '@/services/AppException';
 import FailureLogs from '@/services/FailureLogs';
 import { Request, Response } from 'express';
+
 dotenv.config();
 
 /**

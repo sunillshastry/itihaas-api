@@ -195,5 +195,12 @@ ${keyWarning}
 
 ${textFooter}`,
       };
+
+    default: {
+      const exhaustiveEmailJobType: never = job;
+      throw new Error(
+        `Unhandled email job type: ${String(exhaustiveEmailJobType)}`,
+      );
+    }
   }
 }

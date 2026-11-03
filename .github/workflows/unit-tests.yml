@@ -18,6 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
+    env:
+      JWT_VERIFICATION_TOKEN_SECRET: test-verification-secret
+
     steps:
       - name: checkout repository
         uses: actions/checkout@v4
