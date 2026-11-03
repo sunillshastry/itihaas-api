@@ -155,12 +155,12 @@ describe('Wars API integration', () => {
     );
     expect(war.description.long).toEqual(['Long war description']);
     expect(war.causes).toEqual(['Territory']);
+    expect(war.relatedDynasties).toEqual(['dynasty-a']);
+    expect(war.relatedRulers).toEqual(['ruler-a']);
+    expect(war.relatedWars).toEqual(['earlier-war']);
     expect(war.sources).toEqual(['Test source']);
     expect(war.furtherReading[0].publisher).toBe('Test Press');
     expect(war.articles[0].title).toBe('Test article');
-    expect(war.relatedDynasties).toBeUndefined();
-    expect(war.relatedRulers).toBeUndefined();
-    expect(war.relatedWars).toBeUndefined();
   });
 
   it('returns war names by default from the titles endpoint', async () => {
@@ -190,7 +190,7 @@ describe('Wars API integration', () => {
     const response = await request(app).get(
       `${prefix}/search/titles?include=notAField`,
     );
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(400);
     expect(response.body.success).toBe(false);
   });
 

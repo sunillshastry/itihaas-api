@@ -5,13 +5,16 @@ x-app: &app
   image: itihaas-api
   env_file: .env
   environment:
-    REDIS_URL: redis://redis:6379 # container-to-container: use the service name, not localhost
+    REDIS_URL: redis://redis:6379
+    REDIS_CACHE_URL: redis://redis-cache:6379
     SMTP_HOST: mailpit
   volumes:
     - .:/app
     - /app/node_modules
   depends_on:
     redis:
+      condition: service_healthy
+    redis-cache:
       condition: service_healthy
 
 services:
@@ -25,6 +28,7 @@ services:
     <<: *app
     command: ['npm', 'run', 'worker']
 
+  # Existing Redis: BullMQ email jobs
   redis:
     image: redis:7-alpine
     command:
@@ -36,9 +40,32 @@ services:
         'noeviction',
       ]
     ports:
-      - '127.0.0.1:6379:6379' # host-only, handy for redis-cli / Redis Insight
+      - '127.0.0.1:6379:6379'
     volumes:
       - redis-data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # New Redis: API caching only
+  redis-cache:
+    image: redis:7-alpine
+    command:
+      [
+        'redis-server',
+        '--save',
+        '',
+        '--appendonly',
+        'no',
+        '--maxmemory',
+        '256mb',
+        '--maxmemory-policy',
+        'allkeys-lru',
+      ]
+    ports:
+      - '127.0.0.1:6380:6379'
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
       interval: 5s
@@ -48,8 +75,8 @@ services:
   mailpit:
     image: axllent/mailpit
     ports:
-      - '127.0.0.1:8025:8025' # web inbox
-      - '127.0.0.1:1025:1025' # SMTP
+      - '127.0.0.1:8025:8025'
+      - '127.0.0.1:1025:1025'
 
 volumes:
   redis-data:

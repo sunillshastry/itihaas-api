@@ -13,7 +13,7 @@ async function main() {
   const worker = new Worker<EmailJob>(
     QUEUE_NAME,
     async (job) => {
-      const data = job.data;
+      const { data } = job;
       let apiKey: string | undefined;
 
       // Both API-key emails fetch the key from the database

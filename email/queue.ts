@@ -12,7 +12,11 @@ const queue = new Queue<EmailJob>(QUEUE_NAME, {
   },
 });
 
-queue.on('error', (err) => console.error('[email] queue error', err.message));
+queue.on('error', (err) => {
+  if (process.env?.['NODE_ENV'] === 'development') {
+    console.error('[email] queue error', err.message);
+  }
+});
 
 /** Fire-and-forget. Never throws: a Redis outage shouldn't 500 a registration. */
 export async function sendEmail(job: EmailJob): Promise<boolean> {

@@ -4,8 +4,20 @@ import Dynasties from '@/models/Dynasties';
 import FailureLogs from '@/services/FailureLogs';
 import AppException from '@/services/AppException';
 import { Request, Response } from 'express';
+import z from 'zod';
+import { cacheAside } from '@/cache/redis';
 
 dotenv.config();
+
+const validFieldEntries = ['id', 'slug', 'type'] as const;
+
+const RequestQueryValidation = z.object({
+  include: z
+    .string()
+    .transform((value) => value.split(','))
+    .pipe(z.array(z.enum(validFieldEntries)))
+    .optional(),
+});
 
 /**
  * Controller function to get a list of dynasty names with specified 'id' or
@@ -17,19 +29,23 @@ dotenv.config();
  *     or failure respectively
  */
 async function getDynastyTitles(request: Request, response: Response) {
-  // Retrieve the only query
-  const { include } = request.query;
+  // Retrieve the 'include' query and ensure it is prompt validated
 
-  // Format query fields from the user
-  const userRequestedFields =
-    (include &&
-      (include as string)
-        .split(',')
-        .map((field) => field.trim().toLowerCase())) ||
-    [];
+  const validatedRequestQuery = RequestQueryValidation.safeParse(
+    request?.query,
+  );
 
-  // List of valid query entry fields
-  const VALID_FIELD_ENTRIES = ['id', 'slug', 'type'];
+  if (!validatedRequestQuery?.success) {
+    return response.status(400).json({
+      success: false,
+      errors: validatedRequestQuery.error.issues.map((issue) => ({
+        field: issue?.path.join(''),
+        message: issue?.message,
+      })),
+    });
+  }
+
+  const { include } = validatedRequestQuery.data;
 
   const databaseProjection: {
     name: number;
@@ -41,8 +57,8 @@ async function getDynastyTitles(request: Request, response: Response) {
   // Check if query is included and validate them
   try {
     if (include) {
-      const prohibitedFields = userRequestedFields.filter(
-        (field) => !VALID_FIELD_ENTRIES.includes(field),
+      const prohibitedFields = include.filter(
+        (field) => !validFieldEntries.includes(field),
       );
 
       if (prohibitedFields.length > 0) {
@@ -72,22 +88,27 @@ async function getDynastyTitles(request: Request, response: Response) {
 
       isReturnTypeObject = true;
       // Update _id field in projection
-      if (userRequestedFields.includes('id')) {
+      if (include.includes('id')) {
         // eslint-disable-next-line no-underscore-dangle
         databaseProjection._id = 1;
       }
 
       // Update slug field in projection
-      if (userRequestedFields.includes('slug')) {
+      if (include.includes('slug')) {
         databaseProjection.slug = 1;
       }
     }
 
-    // Fetch data
-    const dynasties = await Dynasties.find({}, databaseProjection).lean();
+    // Check the cache or fetch the content from the database
+
+    const cacheKey = `titles:${include?.join(':')}`;
+    const dynasties = await cacheAside('dynasties', cacheKey, 3600, () =>
+      Dynasties.find({}, databaseProjection).lean(),
+    );
+
     let result;
     if (isReturnTypeObject) {
-      if (userRequestedFields.includes('type')) {
+      if (include?.includes('type')) {
         result = dynasties.map((dynasty) => ({
           ...dynasty,
           type: 'dynasty',

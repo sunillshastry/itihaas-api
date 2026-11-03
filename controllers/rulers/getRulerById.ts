@@ -1,9 +1,11 @@
 // Global imports
 import dotenv from 'dotenv';
-import Rulers from '@/models/Rulers';
 import AppException from '@/services/AppException';
 import FailureLogs from '@/services/FailureLogs';
 import { Request, Response } from 'express';
+import mongoose from 'mongoose';
+import { cacheAside } from '@/cache/redis';
+import Rulers from '@/models/Rulers';
 
 dotenv.config();
 
@@ -18,9 +20,18 @@ async function getRulerById(request: Request, response: Response) {
   // Get the ID from the params
   const { id } = request.params;
 
+  if (!mongoose.isValidObjectId(id)) {
+    return response.status(400).json({
+      success: false,
+      message: 'Invalid dynasty ID',
+    });
+  }
+
   try {
-    // Fetch the ruler from database
-    const ruler = await Rulers.findById(id);
+    // Try to retrieve the requested entity from the cache, on a cache miss - provide the default fetch from the database
+    const ruler = await cacheAside('rulers', `id:${id}`, 3600, () =>
+      Rulers.findById(id).lean(),
+    );
 
     // If no ruler is found
     if (!ruler) {

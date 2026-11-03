@@ -110,32 +110,32 @@ describe('Dynasty routes', () => {
       expect(JSON.stringify(response.body)).toContain('maurya-test');
     });
 
-    it('does not crash on an unsupported fields parameter', async () => {
+    it('returns 400 on an unsupported fields parameter', async () => {
       await seedDynasty();
 
       const response = await request(app)
         .get('/api/v1/dynasties')
         .query({ fields: 'fieldThatDoesNotExist' });
 
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(400);
     });
 
-    it('handles comma-separated fields with mixed casing', async () => {
+    it('returns 400 on comma-separated fields with mixed casing', async () => {
       await seedDynasty();
 
       const response = await request(app)
         .get('/api/v1/dynasties')
         .query({ fields: 'languages,RELIGIONS' });
 
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(400);
     });
 
-    it('handles an empty fields parameter', async () => {
+    it('returns 400 on an empty fields parameter', async () => {
       const response = await request(app)
         .get('/api/v1/dynasties')
         .query({ fields: '' });
 
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(400);
     });
   });
 

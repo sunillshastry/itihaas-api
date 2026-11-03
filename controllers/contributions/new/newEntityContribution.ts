@@ -4,6 +4,7 @@ import FailureLogs from '@/services/FailureLogs';
 import { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import z from 'zod';
+
 dotenv.config();
 
 const ValidationSchema = z.object({

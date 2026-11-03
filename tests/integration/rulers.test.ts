@@ -190,12 +190,12 @@ describe('Rulers API integration', () => {
     });
   });
 
-  it('returns 404 for an unsupported title include field', async () => {
+  it('returns 400 for an unsupported title include field', async () => {
     const response = await request(app).get(
       `${prefix}/search/titles?include=notAField`,
     );
 
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(400);
     expect(response.body.success).toBe(false);
   });
 

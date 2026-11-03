@@ -33,6 +33,7 @@ const UsersSchema = new Schema(
       type: String,
       required: [true, 'ApiKey is a required field'],
       unique: true,
+      index: true,
     },
     verified: {
       type: Boolean,
