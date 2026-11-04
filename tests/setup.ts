@@ -7,7 +7,10 @@ import '../models/Dynasties';
 import '../models/Rulers';
 import '../models/Wars';
 import '../models/Users';
-import { getUsersConnection } from '../database/config';
+import {
+  getContributionsConnection,
+  getUsersConnection,
+} from '../database/config';
 
 let mongo: MongoMemoryServer;
 
@@ -24,6 +27,12 @@ beforeAll(async function () {
   const usersDb = getUsersConnection();
   const userModels = usersDb.modelNames().map((name) => usersDb.model(name));
   await Promise.all(userModels.map((model) => model.init()));
+
+  const contributionsDb = getContributionsConnection();
+  const contributionModels = contributionsDb
+    .modelNames()
+    .map((name) => contributionsDb.model(name));
+  await Promise.all(contributionModels.map((model) => model.init()));
 });
 
 afterEach(async function () {
@@ -37,6 +46,15 @@ afterEach(async function () {
   if (usersDb?.collections) {
     await Promise.all(
       Object.values(usersDb.collections).map((collection) =>
+        collection.deleteMany({}),
+      ),
+    );
+  }
+
+  const contributionsDb = getContributionsConnection();
+  if (contributionsDb?.collections) {
+    await Promise.all(
+      Object.values(contributionsDb.collections).map((collection) =>
         collection.deleteMany({}),
       ),
     );
