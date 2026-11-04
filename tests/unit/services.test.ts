@@ -47,7 +47,15 @@ describe('AppException', () => {
   });
 
   it('supports the success exception type', () => {
-    const exception = new AppException('OK', 200, 'error', true, '/', 'GET', 'x');
+    const exception = new AppException(
+      'OK',
+      200,
+      'error',
+      true,
+      '/',
+      'GET',
+      'x',
+    );
 
     expect(exception.type).toBe('error');
     expect(exception.log().success).toBe(true);

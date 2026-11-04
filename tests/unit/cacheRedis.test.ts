@@ -60,7 +60,9 @@ describe('cacheAside', () => {
   it('does not cache null or undefined results', async () => {
     redis.get.mockResolvedValue(null);
 
-    await expect(cacheAside('wars', 'missing', 30, async () => null)).resolves.toBeNull();
+    await expect(
+      cacheAside('wars', 'missing', 30, async () => null),
+    ).resolves.toBeNull();
     await expect(
       cacheAside('wars', 'missing', 30, async () => undefined),
     ).resolves.toBeUndefined();

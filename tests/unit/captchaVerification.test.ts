@@ -46,7 +46,10 @@ describe('verifyCaptcha service', () => {
   it('returns false when Google reports the token as invalid', async () => {
     fetchMock.mockResolvedValue({
       ok: true,
-      json: async () => ({ success: false, 'error-codes': ['invalid-input-response'] }),
+      json: async () => ({
+        success: false,
+        'error-codes': ['invalid-input-response'],
+      }),
     });
 
     await expect(verifyCaptcha('bad-token')).resolves.toBe(false);

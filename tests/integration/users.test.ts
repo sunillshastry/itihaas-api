@@ -228,7 +228,10 @@ describe('POST /api/v1/users/resend', () => {
       .send({ email: 'resend-me@example.com' });
 
     expect(response.status).toBe(200);
-    expect(response.body).toMatchObject({ success: true, expiration: '15 minutes' });
+    expect(response.body).toMatchObject({
+      success: true,
+      expiration: '15 minutes',
+    });
     expect(sendEmailMock).toHaveBeenCalledWith(
       expect.objectContaining({ type: 'verification-resend' }),
     );
@@ -253,7 +256,10 @@ describe('POST /api/v1/users/recover', () => {
   });
 
   it('returns 401 when the account is not verified yet', async () => {
-    await createUser({ email: 'unverified-recover@example.com', verified: false });
+    await createUser({
+      email: 'unverified-recover@example.com',
+      verified: false,
+    });
 
     const response = await request(app)
       .post(`${prefix}/recover`)

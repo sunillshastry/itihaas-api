@@ -22,91 +22,96 @@ afterEach(() => {
 
 // Each test file gets its own in-memory database, and the global setup clears
 // every collection after each test, so these requests run against empty data.
-describe.each(entities)('$name endpoints against an empty database', (entity) => {
-  it('returns 404 from the random endpoint when no records exist', async () => {
-    const response = await request(app).get(`${entity.path}/random`);
+describe.each(entities)(
+  '$name endpoints against an empty database',
+  (entity) => {
+    it('returns 404 from the random endpoint when no records exist', async () => {
+      const response = await request(app).get(`${entity.path}/random`);
 
-    expect(response.status).toBe(404);
-    expect(response.body).toMatchObject({
-      success: false,
-      message: expect.stringContaining('Fail:'),
+      expect(response.status).toBe(404);
+      expect(response.body).toMatchObject({
+        success: false,
+        message: expect.stringContaining('Fail:'),
+      });
     });
-  });
 
-  it('returns an empty successful list from the collection endpoint', async () => {
-    const response = await request(app).get(entity.path);
+    it('returns an empty successful list from the collection endpoint', async () => {
+      const response = await request(app).get(entity.path);
 
-    expect(response.status).toBe(200);
-    expect(response.body).toMatchObject({
-      success: true,
-      size: 0,
-      data: { [entity.plural]: [] },
+      expect(response.status).toBe(200);
+      expect(response.body).toMatchObject({
+        success: true,
+        size: 0,
+        data: { [entity.plural]: [] },
+      });
     });
-  });
 
-  it('returns an empty title list when there are no records', async () => {
-    const response = await request(app).get(`${entity.path}/search/titles`);
+    it('returns an empty title list when there are no records', async () => {
+      const response = await request(app).get(`${entity.path}/search/titles`);
 
-    expect(response.status).toBe(200);
-    expect(response.body).toMatchObject({
-      success: true,
-      size: 0,
-      data: { [entity.plural]: [] },
+      expect(response.status).toBe(200);
+      expect(response.body).toMatchObject({
+        success: true,
+        size: 0,
+        data: { [entity.plural]: [] },
+      });
     });
-  });
 
-  it('returns an empty result for a search with no matches', async () => {
-    const response = await request(app).get(
-      `${entity.path}/s/nothing-matches-this-term`,
-    );
+    it('returns an empty result for a search with no matches', async () => {
+      const response = await request(app).get(
+        `${entity.path}/s/nothing-matches-this-term`,
+      );
 
-    expect(response.status).toBe(200);
-    expect(response.body.success).toBe(true);
-  });
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+    });
 
-  it('returns 404 for an unknown slug', async () => {
-    const response = await request(app).get(
-      `${entity.path}/this-slug-does-not-exist`,
-    );
+    it('returns 404 for an unknown slug', async () => {
+      const response = await request(app).get(
+        `${entity.path}/this-slug-does-not-exist`,
+      );
 
-    expect(response.status).toBe(404);
-    expect(response.body.success).toBe(false);
-  });
+      expect(response.status).toBe(404);
+      expect(response.body.success).toBe(false);
+    });
 
-  it('returns 400 for a malformed object id', async () => {
-    const response = await request(app).get(`${entity.path}/id/not-an-object-id`);
+    it('returns 400 for a malformed object id', async () => {
+      const response = await request(app).get(
+        `${entity.path}/id/not-an-object-id`,
+      );
 
-    expect(response.status).toBe(400);
-    expect(response.body.success).toBe(false);
-  });
+      expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
+    });
 
-  it('returns 404 for a well-formed but unknown object id', async () => {
-    const response = await request(app).get(
-      `${entity.path}/id/507f1f77bcf86cd799439011`,
-    );
+    it('returns 404 for a well-formed but unknown object id', async () => {
+      const response = await request(app).get(
+        `${entity.path}/id/507f1f77bcf86cd799439011`,
+      );
 
-    expect(response.status).toBe(404);
-    expect(response.body.success).toBe(false);
-  });
+      expect(response.status).toBe(404);
+      expect(response.body.success).toBe(false);
+    });
 
-  it('returns 500 when the random aggregation fails', async () => {
-    const model =
-      entity.name === 'rulers'
-        ? Rulers
-        : entity.name === 'wars'
-          ? Wars
-          : Dynasties;
+    it('returns 500 when the random aggregation fails', async () => {
+      const model =
+        entity.name === 'rulers'
+          ? Rulers
+          : entity.name === 'wars'
+            ? Wars
+            : Dynasties;
 
-    vi.spyOn(model, 'aggregate').mockRejectedValueOnce(
-      new Error('aggregation failed') as never,
-    );
+      vi.spyOn(model, 'aggregate').mockRejectedValueOnce(
+        new Error('aggregation failed') as never,
+      );
 
-    const response = await request(app).get(`${entity.path}/random`);
+      const response = await request(app).get(`${entity.path}/random`);
 
-    expect(response.status).toBe(500);
-    expect(response.body.success).toBe(false);
-  });
-});
+      expect(response.status).toBe(500);
+      expect(response.body.success).toBe(false);
+    });
+  },
+);
 
 describe('Title projection variants', () => {
   it('returns slug fields when requested', async () => {

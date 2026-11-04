@@ -14,9 +14,13 @@ describe('renderEmail templates', () => {
     });
 
     expect(email.subject).toContain('Verify your email');
-    expect(email.html).toContain('https://itihaas.dev/verify/registration-token');
+    expect(email.html).toContain(
+      'https://itihaas.dev/verify/registration-token',
+    );
     expect(email.html).toContain('Asoka');
-    expect(email.text).toContain('https://itihaas.dev/verify/registration-token');
+    expect(email.text).toContain(
+      'https://itihaas.dev/verify/registration-token',
+    );
     expect(email.text).toContain('15 minutes');
   });
 

@@ -102,18 +102,22 @@ describe('Contributions API end-to-end', () => {
     expect(await NewRuler.findOne({ name: 'E2E Ruler' })).not.toBeNull();
     expect(await NewWar.findOne({ name: 'E2E War' })).not.toBeNull();
     expect(await EditEntity.findOne({ name: 'E2E Dynasty' })).not.toBeNull();
-    expect(await ApiDocsQuery.findOne({ subject: 'E2E API question' })).not.toBeNull();
+    expect(
+      await ApiDocsQuery.findOne({ subject: 'E2E API question' }),
+    ).not.toBeNull();
     expect(
       await GeneralContribution.findOne({ subject: 'E2E general feedback' }),
     ).not.toBeNull();
   });
 
   it('records timestamps for accepted contributions', async () => {
-    const response = await request(app).post(`${prefix}/general`).send({
-      subject: 'Timestamp check',
-      description: 'Checking createdAt and updatedAt',
-      ...contributor,
-    });
+    const response = await request(app)
+      .post(`${prefix}/general`)
+      .send({
+        subject: 'Timestamp check',
+        description: 'Checking createdAt and updatedAt',
+        ...contributor,
+      });
 
     expect(response.status).toBe(201);
 

@@ -116,7 +116,8 @@ describe('database connection getters', () => {
   it('lazily creates each connection once and reuses it', async () => {
     useDbMock.mockImplementation((name: string) => ({ name }));
 
-    const { getContributionsConnection, getUsersConnection } = await loadConfig();
+    const { getContributionsConnection, getUsersConnection } =
+      await loadConfig();
 
     const contributions = getContributionsConnection();
     const users = getUsersConnection();
@@ -132,7 +133,8 @@ describe('database connection getters', () => {
     delete process.env['MONGO_DB_USERS_DATABASE'];
     useDbMock.mockImplementation((name: string) => ({ name }));
 
-    const { getContributionsConnection, getUsersConnection } = await loadConfig();
+    const { getContributionsConnection, getUsersConnection } =
+      await loadConfig();
 
     getContributionsConnection();
     getUsersConnection();

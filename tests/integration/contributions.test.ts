@@ -21,7 +21,11 @@ const contributor = {
 const validPayloads = {
   entity: {
     path: `${prefix}/new/entity`,
-    body: { name: 'Contribution Entity', description: 'An entity', ...contributor },
+    body: {
+      name: 'Contribution Entity',
+      description: 'An entity',
+      ...contributor,
+    },
   },
   dynasty: {
     path: `${prefix}/new/dynasty`,
@@ -113,7 +117,9 @@ describe('Contributions API integration', () => {
       });
 
       it('accepts a valid submission with status 201', async () => {
-        const response = await request(app).post(payload.path).send(payload.body);
+        const response = await request(app)
+          .post(payload.path)
+          .send(payload.body);
 
         expect(response.status).toBe(201);
         expect(response.body.success).toBe(true);
@@ -126,7 +132,9 @@ describe('Contributions API integration', () => {
           new Error('database down') as never,
         );
 
-        const response = await request(app).post(payload.path).send(payload.body);
+        const response = await request(app)
+          .post(payload.path)
+          .send(payload.body);
 
         expect(response.status).toBe(500);
         expect(response.body.success).toBe(false);
@@ -162,18 +170,30 @@ describe('Contributions API integration', () => {
   });
 
   it('persists ruler, war, edit, api-docs, and general contributions', async () => {
-    await request(app).post(validPayloads.ruler.path).send(validPayloads.ruler.body);
-    await request(app).post(validPayloads.war.path).send(validPayloads.war.body);
-    await request(app).post(validPayloads.edit.path).send(validPayloads.edit.body);
-    await request(app).post(validPayloads.apiDocs.path).send(validPayloads.apiDocs.body);
+    await request(app)
+      .post(validPayloads.ruler.path)
+      .send(validPayloads.ruler.body);
+    await request(app)
+      .post(validPayloads.war.path)
+      .send(validPayloads.war.body);
+    await request(app)
+      .post(validPayloads.edit.path)
+      .send(validPayloads.edit.body);
+    await request(app)
+      .post(validPayloads.apiDocs.path)
+      .send(validPayloads.apiDocs.body);
     await request(app)
       .post(validPayloads.general.path)
       .send(validPayloads.general.body);
 
-    expect(await NewRuler.findOne({ name: 'Contribution Ruler' })).not.toBeNull();
+    expect(
+      await NewRuler.findOne({ name: 'Contribution Ruler' }),
+    ).not.toBeNull();
     expect(await NewWar.findOne({ name: 'Contribution War' })).not.toBeNull();
     expect(await EditEntity.findOne({ fieldName: 'born' })).not.toBeNull();
-    expect(await ApiDocsQuery.findOne({ subject: 'Docs clarification' })).not.toBeNull();
+    expect(
+      await ApiDocsQuery.findOne({ subject: 'Docs clarification' }),
+    ).not.toBeNull();
     expect(
       await GeneralContribution.findOne({ subject: 'General question' }),
     ).not.toBeNull();
